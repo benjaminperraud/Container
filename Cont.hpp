@@ -34,7 +34,7 @@ std::ostream& operator<< (std::ostream& out, const _Cont_base::_Base<U>& b)
 template <typename T>
 class Cont_base { // abstract
 public:
-  class Info;
+  class Info;               // manière de rendre la classe Info locale (pas de place en mémoire)
   class Ptr2Info;
 protected:
   static const Info _EMPTY;
@@ -125,14 +125,19 @@ namespace _Cont_base {
 // Main class ================================================================
 
 template <typename T>
-class Cont final: Cont_base<T>, public BST<T>, public Vect<T> {
+class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
   using _Base = Cont_base<T>;
   using _Ptr2Info = typename _Base::Ptr2Info;
   using _Vect = Vect<T>;
   using _BST  = BST<T>;
   using _Base::_index;
   using _Base::_ptr;
-  // ...
+
+
+  // Attributs
+  std::size_t _max = 0;   // maximum size of Cont
+
+
 public:
   // Traits
   using value_type      = T;
@@ -140,8 +145,37 @@ public:
   using const_reference = const T&;
   using Info = typename _Base::Info;
   using Ptr2Info = const _Ptr2Info;
-  // ...
-}; // Cont<T>
+  // Constructors
+  constexpr Cont() noexcept = default;      // constructeur sans paramètre
+
+  constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(), _max(t) {}
+
+
+  // Getter
+
+  // Setter
+  const T& insert (const T& v) ;
+
+  // Output
+  void _dsp (std::ostream&) const {};
+
+  // Destructor
+  ~Cont () noexcept = default;
+};
+
+
+
+
+template<typename T>
+const T &Cont<T>::insert(const T &v) {
+    if (_BST::exists(v)){
+        return _BST::insert(v);
+    }
+}
+
+
+
+// Cont<T>
 
 // Deduction guides ==========================================================
 

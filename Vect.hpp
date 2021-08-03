@@ -14,7 +14,7 @@
 #include  <ostream>             // output streams
 
 template <typename T>
-class Vect final {
+class Vect {
     std::size_t _size = 0;
     T *_val = nullptr;
     inline static T* _cp (const Vect&);
@@ -117,18 +117,20 @@ template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v)
 {out << "[ "; v._dsp(out); out << ']'; return out;}
 
-#endif // _VECT_H_
-
 
 // fonctions externes =======================================================
 
-template <typename T>
-inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v){
-    out << "[ ";
-    for (std::size_t i = 0; i < v._size; ++i) out << v._val[i] << ' ';
-    out << ']';
-    return out;
-}
+//template <typename T>
+//inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v){
+//    out << "[ ";
+//    for (std::size_t i = 0; i < v._size; ++i) out << v._val[i] << ' ';
+//    out << ']';
+//    return out;
+//}
+
+#endif // _VECT_H_
 
 
-#endif // _Vect_H_
+
+
+
