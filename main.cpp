@@ -10,23 +10,28 @@
 int main() {
 
     std::cout << std::boolalpha << "<<<" << std::endl;
-    {                                         // Vecteur dynamique
+    {                                         // Test de Cont
         std::cout << "***" << std::endl;
         int i = 42;
-        Cont<int> x(5);
-        std::cout << "sizeof(x) = " << sizeof(x)
-        << " cf. " << 5*sizeof(int) << std::endl;
-        std::cout << "x.dim = " << x.dim() << std::endl;
-        std::cout << "x = " << x << std::endl;
-        std::cout << "x[1] = " << x[1] << std::endl;
-        x[0] = i; x[2] = 1515;
-        std::cout << "x = " << x << std::endl;
-        std::cout << "x[2] = " << x[2] << std::endl;
-        const Cont y(x);
-        std::cout << "y.dim = " << y.dim() << std::endl;
-        std::cout << "y = " << y << std::endl;
-        std::cout << "x = " << x << std::endl;
-        std::cout << "y[2] = " << y[2] << std::endl;
+
+
+        Cont<int> x(5);   // one parameter constructor
+
+
+
+//        std::cout << "x.dim = " << x.dim() << std::endl;
+//        std::cout << "x = " << x << std::endl;
+
+
+//        std::cout << "x[1] = " << x[1] << std::endl;
+//        x[0] = i; x[2] = 1515;
+//        std::cout << "x = " << x << std::endl;
+//        std::cout << "x[2] = " << x[2] << std::endl;
+//        const Cont y(x);
+//        std::cout << "y.dim = " << y.dim() << std::endl;
+//        std::cout << "y = " << y << std::endl;
+//        std::cout << "x = " << x << std::endl;
+//        std::cout << "y[2] = " << y[2] << std::endl;
 
 
 //        x[1] = -1;

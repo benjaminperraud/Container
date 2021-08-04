@@ -61,12 +61,12 @@ public:
 }; // Cont_base<T>
 
 template <typename T>
-const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};
+const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY attribute initialize
 
 // Embedded class Info =======================================================
 
 template <typename T>
-class Cont_base<T>::Info: public _Cont_base::_Base<typename Cont_base<T>::Info> {
+class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base ?
   friend class Cont_base<T>;   // for _index static methods
   std::ptrdiff_t _index = -1;
   const T _data{};
@@ -125,18 +125,19 @@ namespace _Cont_base {
 // Main class ================================================================
 
 template <typename T>
+
+//class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
+
 class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
   using _Base = Cont_base<T>;
   using _Ptr2Info = typename _Base::Ptr2Info;
-  using _Vect = Vect<T>;
-  using _BST  = BST<T>;
+  using _Vect = Vect<_Ptr2Info>;
+  using _BST  = BST<_Ptr2Info>;
   using _Base::_index;
   using _Base::_ptr;
 
-
   // Attributs
-  std::size_t _max = 0;   // maximum size of Cont
-
+  // std::size_t _max = 0;   // maximum size of Cont (pas besoin car déjà dans Vect?)
 
 public:
   // Traits
@@ -146,32 +147,48 @@ public:
   using Info = typename _Base::Info;
   using Ptr2Info = const _Ptr2Info;
   // Constructors
-  constexpr Cont() noexcept = default;      // constructeur sans paramètre
+  constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-  constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(), _max(t) {}
+  // explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
+  explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
+  Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-  // Getter
+//  // Getter
+//  static constexpr bool isNotFound (const T& v) noexcept;
+//  constexpr bool isEmpty () const noexcept ;
+//  const T& find (const T&) const noexcept;
+//  bool exists (const T& v) const noexcept ;
+//
+//
+//  // Traversal
+//  template <typename Fct, typename... Args>
+//  inline void traverse (Fct, Args...) const;
 
   // Setter
-  const T& insert (const T& v) ;
+  const T& insert (const T& v) override;
+
+  // bool erase (const T& v) override;                 // false if doesn't exist
 
   // Output
-  void _dsp (std::ostream&) const {};
+  void _dsp (std::ostream&) const override {} ;
 
   // Destructor
   ~Cont () noexcept = default;
 };
 
 
-
-
 template<typename T>
-const T &Cont<T>::insert(const T &v) {
-    if (_BST::exists(v)){
-        return _BST::insert(v);
-    }
+const T& Cont<T>::insert(const T& v) {
+    return (BST<T>::insert(v));
 }
+
+//template<typename T>
+//bool Cont<T>::erase(const T &v) {
+//    return false;
+//}
+
+
 
 
 
