@@ -12,11 +12,12 @@ int main() {
     std::cout << std::boolalpha << "<<<" << std::endl;
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
-        int i = 42;
 
         Cont_base<int>::Info y(1,12);
 
         BST<int> *x = new Cont<int>(3);   // one parameter constructor
+
+        //BST<int> *x = reinterpret_cast<BST<int> *>(new Cont<int>(3));   // one parameter constructor
 
         x->insert(3);
 
@@ -26,6 +27,17 @@ int main() {
         p = t;
 
         std::cout << "p = " << p << std::endl;
+
+        Cont<int> *i = new Cont<int>(34);   // one parameter constructor
+
+        i->insert(0, 9);
+
+        //i[1] = 12;
+
+        std::cout << i[0] << std::endl;
+
+        Vect<int> *o = new Cont<int>(34);   // one parameter constructor
+
 
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;

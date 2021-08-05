@@ -124,14 +124,15 @@ namespace _Cont_base {
 
 // Main class ================================================================
 
-template <typename T>
+
 
 //class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
 
 //<typename Cont_base<T>::Info>
 
 // class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
-class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
+template <typename T>
+class Cont final: private Cont_base<T>, public BST<T>, public Vect<T> {
   using _Base = Cont_base<T>;
   using _Ptr2Info = typename _Base::Ptr2Info;
 //  using _Vect = Vect<_Ptr2Info>;
@@ -156,50 +157,116 @@ public:
   // Constructors
   constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-  explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
-  //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
+  //explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
+
+  explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
   Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
+
+//  template <typename U>
+//  explicit constexpr Cont(std::size_t t) noexcept: BST<typename Cont_base<U>::Info()>(), Vect<typename Cont_base<U>::Info()>(t){}   // constructor with maximum size of Cont
+  // explicit operator Cont<T>() { return *reinterpret_cast<Cont<T>>(this); }
+  //constexpr explicit operator Cont<T> () const noexcept {return &Cont<_Info>(this) ;}          // constructor with maximum size of Cont
 
 //  // Getter
 //  static constexpr bool isNotFound (const T& v) noexcept;
 //  constexpr bool isEmpty () const noexcept ;
-//  const T& find (const T&) const noexcept;
+   const T& find (const T&) const noexcept;
+
+  inline const T& operator[] (std::ptrdiff_t) const;
 //  bool exists (const T& v) const noexcept ;
 
   // Setter
-
   //const _Ptr2Info& insert (const _Ptr2Info &v) override;
-  const _Info& insert (const _Info &v) override;
+  //const _Info& insert (const _Info &v) override;
+
+  inline T& operator[] (std::ptrdiff_t);    // référence non const donc l-value assignable
 
 
-  // const T& insert (const T &v) ;
+  const T& insert (std::ptrdiff_t i, const T &v) ;
 
   // bool erase (const T& v) override;                 // false if doesn't exist
 
+  // copies / transfert / etc...
+
+  inline Cont& operator= (const Cont&) noexcept;
+  inline Cont& operator= (Cont&&) noexcept;
+
   // Output
-  void _dsp (std::ostream&) const override {} ;
+
+  void _dsp (std::ostream&) const {} ;
 
   // Destructor
   ~Cont () noexcept = default;
 };
 
+//template<typename T>
+//const typename Cont_base<T>::Info& Cont<T>::insert(const Cont::_Info &v) {       // Ptr2Info converted to Info converted to T
+//    return _BST::insert(v);
+//}
+
 template<typename T>
-const typename Cont_base<T>::Info& Cont<T>::insert(const Cont::_Info &v) {       // Ptr2Info converted to Info converted to T
-    return _BST::insert(v);
+const T &Cont<T>::find(const T& v) const noexcept {
+    return BST<T>::find(v);
 }
 
+template<typename T>
+const T& Cont<T>::insert(std::ptrdiff_t i, const T& v) {
+    const T& cont = BST<T>::insert(v);
+    //this[i] = 3 ;
+
+    Vect<T>::operator[](i) = cont;
+    Vect<T>::print();
+;}
+
 //template<typename T>
-//const T &Cont<T>::insert(const T &v) {
-//    return _BST::insert(v);;
+//T& Cont<T>::operator[](std::ptrdiff_t t) {
+////    static_cast<Vect<T>&>(*this);
+////    return this[t];
+//    return Vect<T>::operator[](t) ;
+//}
+
+template<typename T>
+T& Cont<T>::operator[](std::ptrdiff_t t) {                      // l-value
+    return Vect<T>::operator[](t);                              // return observateur ie : r-value
+}
+
+template<typename T>
+const T &Cont<T>::operator[](std::ptrdiff_t t) const {          // r-value
+    return Vect<T>::operator[](t);
+}
+
+template<typename T>
+Cont<T> &Cont<T>::operator=(const Cont &) noexcept {
+    return *this;
+}
+
+template<typename T>
+Cont<T> &Cont<T>::operator=(Cont &&) noexcept {          // move assignement operator
+    return *this;
+}
+
+
+//template <typename T>
+//Vect<T>& Vect<T>::operator= (const Vect& v) noexcept {
+//    if (this != &v) {delete[] _val; _size = v._size; _val = _cp(v);}
+//    return *this;
+//}
+//
+//template <typename T>
+//Vect<T>& Vect<T>::operator= (Vect&& v) noexcept {
+//    if (this != &v) {
+//        delete[] _val; _size = v._size; _val = v._val;
+//        v._size = 0; v._val = nullptr;
+//    }
+//    return *this;
 //}
 
 
-//template<typename T>
-//const T& Cont<T>::insert(const T& v) {
-//    return (_BST::insert(v));
-//}
+template <typename T>
+inline std::ostream& operator<< (std::ostream& out, const Cont<T>& v)
+{out << "[ "; v._dsp(out); out << ']'; return out;}
 
 //template<typename T>
 //bool Cont<T>::erase(const T &v) {
