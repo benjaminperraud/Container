@@ -34,8 +34,8 @@ std::ostream& operator<< (std::ostream& out, const _Cont_base::_Base<U>& b)
 template <typename T>
 class Cont_base { // abstract
 public:
-  class Info;               // manière de rendre la classe Info locale (pas de place en mémoire)
-  class Ptr2Info;
+    class Info;               // manière de rendre la classe Info locale (pas de place en mémoire) -> éviter d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
+    class Ptr2Info;
 protected:
   static const Info _EMPTY;
   // Access methods
@@ -129,12 +129,17 @@ template <typename T>
 //class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
 
 // class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
-class Cont final: private Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
+class Cont final: private Cont_base<T>, private BST<typename Cont_base<T>::Info>, private Vect<typename Cont_base<T>::Info> {
   using _Base = Cont_base<T>;
+
   using _Ptr2Info = typename _Base::Ptr2Info;
-  //using Info = typename _Base::Info;
-  using _Vect = Vect<_Ptr2Info>;
-  using _BST  = BST<_Ptr2Info>;
+//  using _Vect = Vect<_Ptr2Info>;
+//  using _BST  = BST<_Ptr2Info>;
+
+  using _Info = typename _Base::Info;
+  using _Vect = Vect<_Info>;
+  using _BST  = BST<_Info>;
+
   using _Base::_index;
   using _Base::_ptr;
 
@@ -146,7 +151,7 @@ public:
   using value_type      = T;
   using reference       = T&;
   using const_reference = const T&;
-  //using Info = typename _Base::Info;
+  using Info = typename _Base::Info;
   using Ptr2Info = const _Ptr2Info;
   // Constructors
   constexpr Cont() noexcept = default;                                          // constructor without parameters
@@ -154,7 +159,6 @@ public:
   explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
   //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
-
 
   Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
@@ -171,8 +175,11 @@ public:
 
   // Setter
 
-  //const T& insert (const T& v) override;
-  const _Ptr2Info& insert (const _Ptr2Info &v) override;
+  //const _Ptr2Info& insert (const _Ptr2Info &v) override;
+  const _Info& insert (const _Info &v) override;
+
+
+  // const T& insert (const T &v) ;
 
   // bool erase (const T& v) override;                 // false if doesn't exist
 
@@ -184,9 +191,14 @@ public:
 };
 
 template<typename T>
-const typename Cont_base<T>::Ptr2Info& Cont<T>::insert(const Cont::_Ptr2Info &v) {
-    return v;
+const typename Cont_base<T>::Info& Cont<T>::insert(const Cont::_Info &v) {       // Ptr2Info converted to Info converted to T
+    return _BST::insert(v);
 }
+
+//template<typename T>
+//const T &Cont<T>::insert(const T &v) {
+//    return _BST::insert(v);;
+//}
 
 
 //template<typename T>
