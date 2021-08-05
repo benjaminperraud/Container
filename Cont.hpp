@@ -128,10 +128,11 @@ template <typename T>
 
 //class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
 
-// class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
-class Cont final: private Cont_base<T>, private BST<typename Cont_base<T>::Info>, private Vect<typename Cont_base<T>::Info> {
-  using _Base = Cont_base<T>;
+//<typename Cont_base<T>::Info>
 
+// class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
+class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
+  using _Base = Cont_base<T>;
   using _Ptr2Info = typename _Base::Ptr2Info;
 //  using _Vect = Vect<_Ptr2Info>;
 //  using _BST  = BST<_Ptr2Info>;
@@ -139,7 +140,6 @@ class Cont final: private Cont_base<T>, private BST<typename Cont_base<T>::Info>
   using _Info = typename _Base::Info;
   using _Vect = Vect<_Info>;
   using _BST  = BST<_Info>;
-
   using _Base::_index;
   using _Base::_ptr;
 
@@ -167,11 +167,6 @@ public:
 //  constexpr bool isEmpty () const noexcept ;
 //  const T& find (const T&) const noexcept;
 //  bool exists (const T& v) const noexcept ;
-//
-//
-//  // Traversal
-//  template <typename Fct, typename... Args>
-//  inline void traverse (Fct, Args...) const;
 
   // Setter
 

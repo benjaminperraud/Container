@@ -14,16 +14,17 @@ int main() {
         std::cout << "***" << std::endl;
         int i = 42;
 
-        Cont<int> x(5);   // one parameter constructor
-
         Cont_base<int>::Info y(1,12);
 
-        x.insert(y);
+        BST<int> *x = new Cont<int>(3);   // one parameter constructor
+
+        x->insert(3);
 
         Cont_base<int>::Info t(1,12);
 
         int p = 3;
         p = t;
+
         std::cout << "p = " << p << std::endl;
 
 
