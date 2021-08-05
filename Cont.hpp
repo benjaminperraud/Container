@@ -129,7 +129,7 @@ template <typename T>
 //class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
 
 // class Cont final: public Cont_base<T>, private BST<T>, private Vect<T> {
-class Cont final: private Cont_base<T>, private BST<typename Cont_base<T>::Info>, private Vect<typename Cont_base<T>::Info> {
+class Cont final: private Cont_base<T>, public BST<T>, public Vect<T> {
   using _Base = Cont_base<T>;
 
   using _Ptr2Info = typename _Base::Ptr2Info;
@@ -156,13 +156,18 @@ public:
   // Constructors
   constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-  explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
+  explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
   //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
-  Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
+  //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-//  // Getter
+    // Getter
+
+  const T& find(const T &v){
+      return _BST::find(v);
+  }
+
 //  static constexpr bool isNotFound (const T& v) noexcept;
 //  constexpr bool isEmpty () const noexcept ;
 //  const T& find (const T&) const noexcept;
@@ -176,7 +181,7 @@ public:
   // Setter
 
   //const _Ptr2Info& insert (const _Ptr2Info &v) override;
-  const _Info& insert (const _Info &v) override;
+  //const _Info& insert (const _Info &v) override;
 
 
   // const T& insert (const T &v) ;
@@ -190,11 +195,6 @@ public:
   ~Cont () noexcept = default;
 };
 
-template<typename T>
-const typename Cont_base<T>::Info& Cont<T>::insert(const Cont::_Info &v) {       // Ptr2Info converted to Info converted to T
-    return _BST::insert(v);
-}
-
 //template<typename T>
 //const T &Cont<T>::insert(const T &v) {
 //    return _BST::insert(v);;
@@ -202,16 +202,9 @@ const typename Cont_base<T>::Info& Cont<T>::insert(const Cont::_Info &v) {      
 
 
 //template<typename T>
-//const T& Cont<T>::insert(const T& v) {
-//    return (_BST::insert(v));
-//}
-
-//template<typename T>
 //bool Cont<T>::erase(const T &v) {
 //    return false;
 //}
-
-// Cont<T>
 
 // Deduction guides ==========================================================
 
