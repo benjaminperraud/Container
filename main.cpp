@@ -28,13 +28,22 @@ int main() {
 
         std::cout << "p = " << p << std::endl;
 
+        //Cont<int> *i = new Cont<int>(34);   // one parameter constructor
+
         Cont<int> *i = new Cont<int>(34);   // one parameter constructor
 
         i->insert(0, 9);
 
-        //i[1] = 12;
+        std::cout << i[0] << std::endl;        // pas un pointeur affiche bien, avec pointeur appel à dsp
 
-        std::cout << i[0] << std::endl;
+        i->insert(0, 6);
+
+        std::cout << i[1] << std::endl;
+
+        i->insert(1, 90);
+
+        //std::cout << i[1] << std::endl;
+
 
         Vect<int> *o = new Cont<int>(34);   // one parameter constructor
 

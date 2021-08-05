@@ -190,7 +190,7 @@ public:
 
   // copies / transfert / etc...
 
-  inline Cont& operator= (const Cont&) noexcept;
+  inline Cont& operator= (const T&) noexcept;
   inline Cont& operator= (Cont&&) noexcept;
 
   // Output
@@ -214,31 +214,22 @@ const T &Cont<T>::find(const T& v) const noexcept {
 template<typename T>
 const T& Cont<T>::insert(std::ptrdiff_t i, const T& v) {
     const T& cont = BST<T>::insert(v);
-    //this[i] = 3 ;
-
     Vect<T>::operator[](i) = cont;
     Vect<T>::print();
 ;}
 
-//template<typename T>
-//T& Cont<T>::operator[](std::ptrdiff_t t) {
-////    static_cast<Vect<T>&>(*this);
-////    return this[t];
-//    return Vect<T>::operator[](t) ;
-//}
-
 template<typename T>
-T& Cont<T>::operator[](std::ptrdiff_t t) {                      // l-value
+T& Cont<T>::operator[](std::ptrdiff_t t) {                      // l-value    -> inutile dans le cadre du projet
     return Vect<T>::operator[](t);                              // return observateur ie : r-value
 }
 
 template<typename T>
-const T &Cont<T>::operator[](std::ptrdiff_t t) const {          // r-value
+const T &Cont<T>::operator[](std::ptrdiff_t t) const {          // r-value    ->
     return Vect<T>::operator[](t);
 }
 
 template<typename T>
-Cont<T> &Cont<T>::operator=(const Cont &) noexcept {
+Cont<T> &Cont<T>::operator=(const T &) noexcept {            // opérateur d'assignation en l-value ?
     return *this;
 }
 
@@ -266,7 +257,8 @@ Cont<T> &Cont<T>::operator=(Cont &&) noexcept {          // move assignement ope
 
 template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const Cont<T>& v)
-{out << "[ "; v._dsp(out); out << ']'; return out;}
+{out << "[ ";  v._dsp(out) ; out << ']'; return out;}
+
 
 //template<typename T>
 //bool Cont<T>::erase(const T &v) {
