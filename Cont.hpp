@@ -165,37 +165,53 @@ public:
 
   //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-  // Getter
-//  static constexpr bool isNotFound (const T& v) noexcept;
-//  constexpr bool isEmpty () const noexcept ;
-//  const T& find (const T&) const noexcept;
-//  bool exists (const T& v) const noexcept ;
-//
-//
-//  // Traversal
-//  template <typename Fct, typename... Args>
-//  inline void traverse (Fct, Args...) const;
 
-  // Setter
   const _Info& insert (const _Info &v) override;
 
-  //const T& insert (const T &v) override;
+  const _Info& insert(ptrdiff_t idx, const _Info &v);
 
-  // bool erase (const T& v) override;                 // false if doesn't exist
+  bool erase(ptrdiff_t i, const _Info &v);
+  const _Info& find(const T &v) const;
 
   // Output
   void _dsp (std::ostream&) const override {} ;
 
   // Destructor
   ~Cont () noexcept = default;
-
-
-
 };
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const Cont::_Info &v) {
     return _BST::insert(v);
+}
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::find(const T& v) const {
+    return _BST::find(v);
+}
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
+    if (std::size_t(idx) <= _Vect::dim()){
+        if(!_BST::exists(v)){
+            _BST::erase(v);
+            _Vect::operator[](idx) = _BST::insert(v);
+        }
+        else{
+            throw std::domain_error("element already in Container");
+        }
+    }
+    else{
+        throw std::domain_error("index out of range");
+    }
+}
+
+template<typename T>
+bool Cont<T>::erase(std::ptrdiff_t i, const Cont::_Info &v) {
+    if(this[i] == v){
+        this[i] = Cont_base<T>::_EMPTY;
+        return _BST::erase(v);
+    }
 }
 
 

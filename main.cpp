@@ -16,22 +16,15 @@ int main() {
 
         Cont_base<int>::Info t(1,12);
 
-        BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
+        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
-        //BST<int> *x = new Cont<int>(5);         // one parameter constructor
+        Cont<int> *x = new Cont<int>(5);   // one parameter constructor
 
         //Cont_base<int>::Info y(1,12);
-
-        int p = 3;
 
         x->insert(3);    // conversion de int vers Info implicit ?
 
         std::cout << "find(3) :" << x->find(3) << std::endl;
-
-        //Cont_base<int>::Info t(1,12);
-
-        p = t;
-        std::cout << "p = " << p << std::endl;
 
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;
