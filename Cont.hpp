@@ -82,6 +82,9 @@ public:
   constexpr Info (std::ptrdiff_t i, const T& v) noexcept: _index(i), _data(v) {}
   constexpr Info (const T& v) noexcept: _data(v) {}             // implicit cast
   constexpr operator const T& () const noexcept {return _data;} // implicit cast
+
+  constexpr operator const Ptr2Info& () const noexcept {return Info(_data);} // implicit cast
+
   template <typename> friend constexpr bool operator< (const Info&, const Info&) noexcept;
   template <typename> friend constexpr bool operator== (const Info&, const Info&) noexcept;
   constexpr bool operator< (const Info& i) const noexcept
@@ -108,8 +111,10 @@ public:
   constexpr Ptr2Info () noexcept = default;
   constexpr operator const Info& () const noexcept     // implicit cast           -> conversion from const Info& to const *Info  ?
     {return _ptr ? *_ptr : _EMPTY;}
+
     constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const Info
     {return _ptr ? *_ptr : _EMPTY;}
+
   // Getter
   constexpr bool isEmpty () const noexcept {return !_ptr;}
   constexpr bool operator< (const Ptr2Info& i) const noexcept
