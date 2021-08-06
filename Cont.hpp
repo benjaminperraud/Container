@@ -235,6 +235,7 @@ const T& Cont<T>::insert(std::ptrdiff_t idx, const T& v) {           // probleme
 template<typename T>
 bool Cont<T>::erase(std::ptrdiff_t i, const T &v) {
     if(this[i] == v){
+        this[i] = Cont_base<T>::_EMPTY;
         return BST<T>::erase(v);
     }
 }
