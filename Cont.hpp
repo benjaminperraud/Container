@@ -165,9 +165,6 @@ public:
 
   //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-
-  const _Info& insert (const _Info &v) override;
-
   const _Info& insert(ptrdiff_t idx, const _Info &v);
 
   bool erase(ptrdiff_t i, const _Info &v);
@@ -180,10 +177,6 @@ public:
   ~Cont () noexcept = default;
 };
 
-template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(const Cont::_Info &v) {
-    return _BST::insert(v);
-}
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::find(const T& v) const {
