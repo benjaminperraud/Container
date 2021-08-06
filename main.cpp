@@ -14,26 +14,21 @@ int main() {
         std::cout << "***" << std::endl;
         int i = 42;
 
-        // Cont<int> *x = new Cont<int>(5);   // one parameter constructor
+        Cont_base<int>::Info t(1,12);
 
-        BST<int> *x ;   // one parameter constructor
+        BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
-        x = new Cont<int>(5);
+        //BST<int> *x = new Cont<int>(5);         // one parameter constructor
 
-        Cont_base<int>::Info y(1,12);
-
-        x->insert(y);
+        //Cont_base<int>::Info y(1,12);
 
         int p = 3;
 
-        x->insert(3);    // conversion de int vers Info implicit, comment ?
+        x->insert(3);    // conversion de int vers Info implicit ?
 
+        std::cout << "find(3) :" << x->find(3) << std::endl;
 
-        std::cout << "test" << x->find(7) << std::endl;
-
-
-        Cont_base<int>::Info t(1,12);
-
+        //Cont_base<int>::Info t(1,12);
 
         p = t;
         std::cout << "p = " << p << std::endl;

@@ -126,9 +126,9 @@ namespace _Cont_base {
 
 template <typename T>
 
-//class Cont final: public Cont_base<T>, private BST<typename Cont_base<T>::Ptr2Info>, private Vect<typename Cont_base<T>::Ptr2Info> {
+//class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
 
-class Cont final: private Cont_base<T>, public BST<T>, public Vect<T> {
+class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
   using _Base = Cont_base<T>;
 
   using _Ptr2Info = typename _Base::Ptr2Info;
@@ -154,16 +154,18 @@ public:
   // Constructors
   constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-  explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
+  explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
+
+      //std::cout << _Vect::print()._index << std::endl;
+
+
+  }           // constructor with maximum size of Cont
 
   //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
   //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
   // Getter
-  const T& find(const T &v){
-      return BST<T>::find(v);
-  }
 //  static constexpr bool isNotFound (const T& v) noexcept;
 //  constexpr bool isEmpty () const noexcept ;
 //  const T& find (const T&) const noexcept;
@@ -175,9 +177,9 @@ public:
 //  inline void traverse (Fct, Args...) const;
 
   // Setter
-  //const _Ptr2Info& insert (const _Ptr2Info &v) override;
+  const _Info& insert (const _Info &v) override;
 
-  const T& insert (const T &v) override;
+  //const T& insert (const T &v) override;
 
   // bool erase (const T& v) override;                 // false if doesn't exist
 
@@ -186,17 +188,17 @@ public:
 
   // Destructor
   ~Cont () noexcept = default;
+
+
+
 };
 
 template<typename T>
-const T &Cont<T>::insert(const T &v) {
-    return BST<T>::insert(v);;
+const typename Cont<T>::_Info& Cont<T>::insert(const Cont::_Info &v) {
+    return _BST::insert(v);
 }
 
-//template<typename T>
-//bool Cont<T>::erase(const T &v) {
-//    return false;
-//}
+
 
 // Deduction guides ==========================================================
 
