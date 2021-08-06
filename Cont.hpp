@@ -174,17 +174,15 @@ public:
 //  constexpr bool isEmpty () const noexcept ;
    const T& find (const T&) const noexcept;
 
-  inline const T& operator[] (std::ptrdiff_t) const;
 //  bool exists (const T& v) const noexcept ;
 
   // Setter
   //const _Ptr2Info& insert (const _Ptr2Info &v) override;
   //const _Info& insert (const _Info &v) override;
 
-  inline T& operator[] (std::ptrdiff_t);    // référence non const donc l-value assignable
-
-
   const T& insert (std::ptrdiff_t i, const T &v) ;
+  //bool erase (const T& v);
+  bool erase (std::ptrdiff_t i, const T& v);
 
   // bool erase (const T& v) override;                 // false if doesn't exist
 
@@ -212,20 +210,33 @@ const T &Cont<T>::find(const T& v) const noexcept {
 }
 
 template<typename T>
-const T& Cont<T>::insert(std::ptrdiff_t i, const T& v) {
-    const T& cont = BST<T>::insert(v);
-    Vect<T>::operator[](i) = cont;
-    Vect<T>::print();
+const T& Cont<T>::insert(std::ptrdiff_t idx, const T& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
+    if (std::size_t(idx) <= Vect<T>::dim()){
+        if(!BST<T>::exists(v)){
+            BST<T>::erase(v);
+            Vect<T>::operator[](idx) = BST<T>::insert(v);             // this[i] fonctionne pas ici ?
+        }
+        else{
+            throw std::domain_error("element already in Container");
+        }
+    }
+    else{
+        throw std::domain_error("index out of range");
+    }
+
+    //Vect<T>::print();
 ;}
 
-template<typename T>
-T& Cont<T>::operator[](std::ptrdiff_t t) {                      // l-value    -> inutile dans le cadre du projet
-    return Vect<T>::operator[](t);                              // return observateur ie : r-value
-}
+//template<typename T>
+//bool Cont<T>::erase(const T &v) {
+//    return BST<T>::erase(v);
+//}
 
 template<typename T>
-const T &Cont<T>::operator[](std::ptrdiff_t t) const {          // r-value    ->
-    return Vect<T>::operator[](t);
+bool Cont<T>::erase(std::ptrdiff_t i, const T &v) {
+    if(this[i] == v){
+        return BST<T>::erase(v);
+    }
 }
 
 template<typename T>
@@ -237,6 +248,7 @@ template<typename T>
 Cont<T> &Cont<T>::operator=(Cont &&) noexcept {          // move assignement operator
     return *this;
 }
+
 
 
 //template <typename T>
@@ -259,11 +271,6 @@ template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const Cont<T>& v)
 {out << "[ ";  v._dsp(out) ; out << ']'; return out;}
 
-
-//template<typename T>
-//bool Cont<T>::erase(const T &v) {
-//    return false;
-//}
 
 // Cont<T>
 

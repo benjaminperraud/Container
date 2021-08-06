@@ -28,25 +28,27 @@ int main() {
 
         std::cout << "p = " << p << std::endl;
 
-        //Cont<int> *i = new Cont<int>(34);   // one parameter constructor
-
         Cont<int> *i = new Cont<int>(34);   // one parameter constructor
 
+        //Cont<int> i(34);   // one parameter constructor
+
+
         i->insert(0, 9);
+        i->insert(0, 8);          // probleme insertion possible au même indice -> il faut Ptr_Info
 
-        std::cout << i[0] << std::endl;        // pas un pointeur affiche bien, avec pointeur appel à dsp
+        std::cout << "i[0] :" << (*i)[0] << std::endl;        // pas un pointeur affiche bien, avec pointeur : polymorphisme = appel à dsp
 
-        i->insert(0, 6);
 
-        std::cout << i[1] << std::endl;
 
-        i->insert(1, 90);
+        //i->insert(0, 6);
+
+        std::cout << i->find(9) << std::endl;
+
 
         //std::cout << i[1] << std::endl;
 
 
         Vect<int> *o = new Cont<int>(34);   // one parameter constructor
-
 
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;
