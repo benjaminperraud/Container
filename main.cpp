@@ -22,7 +22,7 @@ int main() {
 
         //Cont_base<int>::Info y(1,12);
 
-        x->insert(3);    // conversion de int vers Info implicit ?
+        x->insert(1, 3);    // conversion de int vers Info implicit ?
 
         std::cout << "find(3) :" << x->find(3) << std::endl;
 

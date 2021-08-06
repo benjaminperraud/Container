@@ -106,7 +106,7 @@ public:
   using const_reference = const T&;
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
-  constexpr operator const Info& () const noexcept     // implicit cast
+  constexpr operator const Info& () const noexcept     // implicit cast           -> conversion from const Info& to const *Info  ?
     {return _ptr ? *_ptr : _EMPTY;}
     constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const Info
     {return _ptr ? *_ptr : _EMPTY;}
@@ -128,16 +128,15 @@ template <typename T>
 
 //class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
 
-class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
+class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
   using _Base = Cont_base<T>;
-
   using _Ptr2Info = typename _Base::Ptr2Info;
 //  using _Vect = Vect<_Ptr2Info>;
 //  using _BST  = BST<_Ptr2Info>;
 
   using _Info = typename _Base::Info;
-  using _Vect = Vect<_Info>;
-  using _BST  = BST<_Info>;
+  using _Vect = Vect<_Ptr2Info>;
+  using _BST  = BST<_Ptr2Info>;
   using _Base::_index;
   using _Base::_ptr;
 
@@ -166,12 +165,11 @@ public:
   //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
 
-  const _Info& insert (const _Info &v) override;
+  const _Ptr2Info& insert(ptrdiff_t idx, const _Ptr2Info &v);
 
-  const _Info& insert(ptrdiff_t idx, const _Info &v);
+  bool erase(ptrdiff_t i, const _Ptr2Info &v);
 
-  bool erase(ptrdiff_t i, const _Info &v);
-  const _Info& find(const T &v) const;
+  const _Ptr2Info& find(const T &v) const;
 
   // Output
   void _dsp (std::ostream&) const override {} ;
@@ -180,21 +178,18 @@ public:
   ~Cont () noexcept = default;
 };
 
-template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(const Cont::_Info &v) {
-    return _BST::insert(v);
-}
+
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::find(const T& v) const {
+const typename Cont<T>::_Ptr2Info& Cont<T>::find(const T& v) const {
     return _BST::find(v);
 }
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
+const typename Cont<T>::_Ptr2Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_Ptr2Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
-            _BST::erase(v);
+            //_BST::erase(v);
             _Vect::operator[](idx) = _BST::insert(v);
         }
         else{
@@ -207,7 +202,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_
 }
 
 template<typename T>
-bool Cont<T>::erase(std::ptrdiff_t i, const Cont::_Info &v) {
+bool Cont<T>::erase(std::ptrdiff_t i, const Cont::_Ptr2Info &v) {
     if(this[i] == v){
         this[i] = Cont_base<T>::_EMPTY;
         return _BST::erase(v);
