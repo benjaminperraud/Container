@@ -184,7 +184,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const T& v) const {
 }
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
+const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const _Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
             _BST::erase(v);
@@ -200,7 +200,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const Cont::_
 }
 
 template<typename T>
-bool Cont<T>::erase(std::ptrdiff_t i, const Cont::_Info &v) {
+bool Cont<T>::erase(std::ptrdiff_t i, const _Info &v) {
     if(this[i] == v){
         this[i] = Cont_base<T>::_EMPTY;
         return _BST::erase(v);
