@@ -144,9 +144,6 @@ class Cont final: private Cont_base<T>, public BST<T>, public Vect<T> {
   using _Base::_index;
   using _Base::_ptr;
 
-  // Attributs
-  // std::size_t _max = 0;   // maximum size of Cont (pas besoin car déjà dans Vect?)
-
 public:
   // Traits
   using value_type      = T;
@@ -156,7 +153,6 @@ public:
   using Ptr2Info = const _Ptr2Info;
   // Constructors
   constexpr Cont() noexcept = default;                                          // constructor without parameters
-
 
   //explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
@@ -169,22 +165,12 @@ public:
   // explicit operator Cont<T>() { return *reinterpret_cast<Cont<T>>(this); }
   //constexpr explicit operator Cont<T> () const noexcept {return &Cont<_Info>(this) ;}          // constructor with maximum size of Cont
 
-//  // Getter
-//  static constexpr bool isNotFound (const T& v) noexcept;
-//  constexpr bool isEmpty () const noexcept ;
    const T& find (const T&) const noexcept;
 
 //  bool exists (const T& v) const noexcept ;
 
-  // Setter
-  //const _Ptr2Info& insert (const _Ptr2Info &v) override;
-  //const _Info& insert (const _Info &v) override;
-
   const T& insert (std::ptrdiff_t i, const T &v) ;
-  //bool erase (const T& v);
   bool erase (std::ptrdiff_t i, const T& v);
-
-  // bool erase (const T& v) override;                 // false if doesn't exist
 
   // copies / transfert / etc...
 
@@ -227,11 +213,6 @@ const T& Cont<T>::insert(std::ptrdiff_t idx, const T& v) {           // probleme
     //Vect<T>::print();
 ;}
 
-//template<typename T>
-//bool Cont<T>::erase(const T &v) {
-//    return BST<T>::erase(v);
-//}
-
 template<typename T>
 bool Cont<T>::erase(std::ptrdiff_t i, const T &v) {
     if(this[i] == v){
@@ -249,23 +230,6 @@ template<typename T>
 Cont<T> &Cont<T>::operator=(Cont &&) noexcept {          // move assignement operator
     return *this;
 }
-
-
-
-//template <typename T>
-//Vect<T>& Vect<T>::operator= (const Vect& v) noexcept {
-//    if (this != &v) {delete[] _val; _size = v._size; _val = _cp(v);}
-//    return *this;
-//}
-//
-//template <typename T>
-//Vect<T>& Vect<T>::operator= (Vect&& v) noexcept {
-//    if (this != &v) {
-//        delete[] _val; _size = v._size; _val = v._val;
-//        v._size = 0; v._val = nullptr;
-//    }
-//    return *this;
-//}
 
 
 template <typename T>
