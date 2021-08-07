@@ -18,9 +18,11 @@ int main() {
 
         //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
-        //BST<int> *x = new Cont<int>(5);   // one parameter constructor
+        //BST<int> *x = new BST<int>();   // one parameter constructor
 
-        Cont<int> *x = new Cont<int>(5);   // one parameter constructor
+        auto *x = new Cont<Cont_base<int>::Ptr2Info>();   // one parameter constructor
+
+        //Cont<int> *x = new Cont<int>(5);   // one parameter constructor
 
         //Cont_base<int>::Info y(1,12);
 
