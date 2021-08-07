@@ -112,7 +112,8 @@ public:
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
 
-  Ptr2Info (T v) : _ptr(&v) {};
+  //Ptr2Info (const Info *v) noexcept : _ptr(v) {};
+  Ptr2Info (const T *v) noexcept : _ptr(v) {};
 
   constexpr operator const Info& () const noexcept     // implicit cast           -> conversion from const Info& to const *Info  ?
     {return _ptr ? *_ptr : _EMPTY;}
