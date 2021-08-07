@@ -18,13 +18,18 @@ int main() {
 
         //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
+        //BST<int> *x = new Cont<int>(5);   // one parameter constructor
+
         Cont<int> *x = new Cont<int>(5);   // one parameter constructor
 
         //Cont_base<int>::Info y(1,12);
 
-        x->insert(1, t);    // conversion de Info vers Ptr_Info via operateur()
+        //x->insert(1, t);    // conversion de Info vers Ptr_Info via operateur()
 
-        //x->insert(1, 3);    // conversion de int vers Info implicit ?
+
+        x->insert(1, 3);    // conversion de int vers Info implicit ?
+
+
 
         //std::cout << "find(3) :" << x->find(3) << std::endl;
 

@@ -83,7 +83,9 @@ public:
   constexpr Info (const T& v) noexcept: _data(v) {}             // implicit cast
   constexpr operator const T& () const noexcept {return _data;} // implicit cast
 
-  constexpr operator const Ptr2Info& () const noexcept {return Info(_data);} // implicit cast
+  //constexpr operator const Ptr2Info& () const noexcept {return Info(_data);} // implicit cast
+
+  //Info (T &v) : _data(v) {};
 
   template <typename> friend constexpr bool operator< (const Info&, const Info&) noexcept;
   template <typename> friend constexpr bool operator== (const Info&, const Info&) noexcept;
@@ -109,6 +111,9 @@ public:
   using const_reference = const T&;
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
+
+  Ptr2Info (T v) : _ptr(&v) {};
+
   constexpr operator const Info& () const noexcept     // implicit cast           -> conversion from const Info& to const *Info  ?
     {return _ptr ? *_ptr : _EMPTY;}
 
