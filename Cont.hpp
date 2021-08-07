@@ -112,8 +112,6 @@ public:
 
   // Ptr2Info (const Info *v) noexcept : _ptr(v) {};
 
-
-
   constexpr operator const Info& () const noexcept     // implicit cast         -> conversion from const Info& to const *Info  ?
     {return _ptr ? *_ptr : _EMPTY;}
   constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const *Info
@@ -172,9 +170,9 @@ public:
 
   //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
+  inline const _Ptr2Info& operator[] (std::ptrdiff_t) const;
 
   const _Ptr2Info& insert(ptrdiff_t idx, const _Ptr2Info &v);
-
 
   bool erase(ptrdiff_t i, const _Ptr2Info &v);
 
@@ -190,7 +188,7 @@ public:
 
 
 template<typename T>
-const typename Cont<T>::_Ptr2Info& Cont<T>::find(const T& v) const {
+const typename Cont<T>::_Ptr2Info& Cont<T>::find(const T& v) const {            // pourquoi typename nécessaire ici ? voir cours
     return _BST::find(v);
 }
 
@@ -198,8 +196,10 @@ template<typename T>
 const typename Cont<T>::_Ptr2Info& Cont<T>::insert(std::ptrdiff_t idx, const _Ptr2Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
-            //_BST::erase(v);
-            _Vect::operator[](idx) = _BST::insert(v);
+            if (!_Vect::operator[](idx).isEmpty()) {
+                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
+            }
+            _Vect::operator[](idx) = _BST::insert(v);                   // Vect_val[i] = &new_node
         }
         else{
             throw std::domain_error("element already in Container");
@@ -208,14 +208,23 @@ const typename Cont<T>::_Ptr2Info& Cont<T>::insert(std::ptrdiff_t idx, const _Pt
     else{
         throw std::domain_error("index out of range");
     }
+    //if (_Vect::operator[](idx)(idx) == Ptr2Info(3)) std::cout << "ok" << std::endl;
 }
 
 template<typename T>
-bool Cont<T>::erase(std::ptrdiff_t i, const _Ptr2Info &v) {
-    if(this[i] == v){
-        this[i] = Cont_base<T>::_EMPTY;
+bool Cont<T>::erase(std::ptrdiff_t idx, const _Ptr2Info &v) {
+    if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+        _Vect::operator[](idx) = Ptr2Info() ;
         return _BST::erase(v);
     }
+    else{
+        throw std::domain_error("element not found at this position");
+    }
+}
+
+template<typename T>
+const typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
+    return _Vect::operator[](idx);
 }
 
 
