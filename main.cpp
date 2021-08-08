@@ -22,9 +22,9 @@ int main() {
 
         //Cont_base<int>::Info y(1,12);
 
-        x->insert(3);    // conversion de int vers Info implicit ?
+        x->insert(t);    // conversion de int vers Info implicit ?
 
-        std::cout << "find(3) :" << x->find(3) << std::endl;
+        std::cout << "find(12) :" << x->find(12) << std::endl;
 
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;

@@ -128,13 +128,13 @@ template <typename T>
 
 //class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
 
-class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
+class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
     using _Base = Cont_base<T>;
     using _Ptr2Info = typename _Base::Ptr2Info;
     using _Info = typename _Base::Info;
     //  using _Vect = Vect<_Ptr2Info>;
     //  using _BST  = BST<_Ptr2Info>;
-    using _Vect = Vect<_Info>;
+    using _Vect = Vect<_Ptr2Info>;
     using _BST  = BST<_Info>;
     using _Base::_index;
     using _Base::_ptr;
@@ -189,13 +189,15 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
 
     //Cont<T>::_Ptr2Info y = new Info (idx, *Cont_base<T>::_ptr(v));
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
-
+    if (idx == -1){
+        throw std::domain_error("no index specified");
+    }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
             if (!_Vect::operator[](idx).isEmpty()) {
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
             }
-            Cont_base<T>::_ptr(_Vect::operator[](idx)) = Cont_base<T>::_ptr(_BST::insert(v));           // Vect[i] points to Node of BST
+            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to Node of BST
             // pointeur de Ptr_Info contenu dans Vect[idx] = pointeur de Ptr_Info contenu dans Node(v) de BST
 
         }
