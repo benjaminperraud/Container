@@ -13,37 +13,29 @@ int main() {
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
 
-        Cont_base<int>::Info t(1,12);
+        Cont_base<int>::Info t(15,12);
 
         //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
-        Cont<int> *x = new Cont<int>(5);   // one parameter constructor
+        Cont<int> *x = new Cont<int>(50);   // one parameter constructor
 
         x->insert(t);    // conversion de int vers Info implicit ?
-        std::cout << x->operator[](1) << std::endl;
+
+        std::cout << "find(t) :" << x->find(t) << std::endl;
+        std::cout << "find(Info(2,12)) :" << x->find(Cont_base<int>::Info(2,12)) << std::endl;
+
+        std::cout << x->operator[](15) << std::endl;
         std::cout << "find(12) :" << x->find(12) << std::endl;
         x->erase(t);
         std::cout << "find(12) :" << x->find(12) << std::endl;
-
         x->insert(Cont_base<int>::Info(2,9));    // conversion de int vers Ptr_Info implicit !           -> pas de polymoprhisme possible car méthode pas redefinissable !
-
         std::cout << x->operator[](2) << std::endl;
-
         std::cout << "find(9) :" << x->find(9) << std::endl;
-
-        //x->erase(Cont_base<int>::Info(2,9));
 
         x->erase(9);
-
         std::cout << "find(9) :" << x->find(9) << std::endl;
         std::cout << x->operator[](2) << std::endl;
 
-
-
-
-
-//        std::cout << "x.dim = " << x.dim() << std::endl;
-//        std::cout << "x = " << x << std::endl;
 
 
 //        std::cout << "x[1] = " << x[1] << std::endl;

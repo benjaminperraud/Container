@@ -68,11 +68,15 @@ const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY att
 template <typename T>
 class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base ?
   friend class Cont_base<T>;   // for _index static methods
-  std::ptrdiff_t _index = -1;
+
   const T _data{};
   friend struct _Cont_base::_Base<Info>;
   constexpr void _dsp (std::ostream& out) const {out << _data;}
 public:
+
+
+    std::ptrdiff_t _index = -1;
+
   // Traits
   using value_type      = T;
   using reference       = T&;
@@ -167,10 +171,15 @@ public:
 
     const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
 
-    bool erase(const _Info &v) override;
-    bool erase(ptrdiff_t i, const _Info &v);
+    const _Info& test(const _Info &v){
+        std::ptrdiff_t idx = Cont_base<T>::_index(v);
+        std::cout << "index = " << idx << std::endl;
+        return v;
+    }
 
-    const _Info& find(const _Info &v)  const noexcept override;
+    bool erase(const _Info &v) override;
+
+    const _Info& find(const _Info &v) const noexcept override;
 
     // Output
     void _dsp (std::ostream&) const override {} ;
@@ -179,10 +188,11 @@ public:
     ~Cont () noexcept = default;
 };
 
-template<typename T>
-const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
-    return _BST::find(v);
-}
+//template<typename T>
+//const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
+//    return _BST::find(v);
+//}
+
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
@@ -192,12 +202,11 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
+        //if(!static_cast<_BST*>(this)->_BST::exists(v)){
             if (!_Vect::operator[](idx).isEmpty()) {
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
             }
             Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to Node of BST
-            // pointeur de Ptr_Info contenu dans Vect[idx] = pointeur de Ptr_Info contenu dans Node(v) de BST
-
         }
         else{
             throw std::domain_error("element already in Container");
@@ -213,12 +222,12 @@ bool Cont<T>::erase(const _Info &v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){
         Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;
-        return _BST::erase(v);
+        _BST::erase(v);
     }
     else {
         if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
             _Vect::operator[](idx) = Ptr2Info() ;
-            return _BST::erase(v);
+            _BST::erase(v);
         }
         else{
             throw std::domain_error("element not found at this position");
@@ -226,12 +235,25 @@ bool Cont<T>::erase(const _Info &v) {
     }
 }
 
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+    if (idx == -1){
+        _BST::find(v);
+    }
+    else{
+        if(_Vect::operator[](idx) == v){
+            _BST::find(v);
+        }
+        else return _BST::_NOT_FOUND;
+    }
+}
+
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
     return _Vect::operator[](idx);
 }
-
-
 
 
 
