@@ -129,66 +129,75 @@ template <typename T>
 //class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
 
 class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Info> {
-  using _Base = Cont_base<T>;
+    using _Base = Cont_base<T>;
+    using _Ptr2Info = typename _Base::Ptr2Info;
+    using _Info = typename _Base::Info;
+    //  using _Vect = Vect<_Ptr2Info>;
+    //  using _BST  = BST<_Ptr2Info>;
+    using _Vect = Vect<_Info>;
+    using _BST  = BST<_Info>;
+    using _Base::_index;
+    using _Base::_ptr;
 
-  using _Ptr2Info = typename _Base::Ptr2Info;
-//  using _Vect = Vect<_Ptr2Info>;
-//  using _BST  = BST<_Ptr2Info>;
-
-  using _Info = typename _Base::Info;
-  using _Vect = Vect<_Info>;
-  using _BST  = BST<_Info>;
-  using _Base::_index;
-  using _Base::_ptr;
-
-  // Attributs
-  // std::size_t _max = 0;   // maximum size of Cont (pas besoin car déjà dans Vect?)
+    // Attributs
+    // std::size_t _max = 0;   // maximum size of Cont (pas besoin car déjà dans Vect?)
 
 public:
-  // Traits
-  using value_type      = T;
-  using reference       = T&;
-  using const_reference = const T&;
-  using Info = typename _Base::Info;
-  using Ptr2Info = const _Ptr2Info;
-  // Constructors
-  constexpr Cont() noexcept = default;                                          // constructor without parameters
+    // Traits
+    using value_type      = T;
+    using reference       = T&;
+    using const_reference = const T&;
+    using Info = typename _Base::Info;
+    using Ptr2Info = const _Ptr2Info;
+    // Constructors
+    constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-  explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
+    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
 
-      //std::cout << _Vect::print()._index << std::endl;
+        //std::cout << _Vect::print()._index << std::endl;
 
 
-  }           // constructor with maximum size of Cont
+    }           // constructor with maximum size of Cont
 
-  //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
+    //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
-  //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
+    //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-  const _Info& insert(ptrdiff_t idx, const _Info &v);
+    inline const _Info& operator[] (std::ptrdiff_t) const;
 
-  bool erase(ptrdiff_t i, const _Info &v);
-  const _Info& find(const T &v) const;
+    const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
 
-  // Output
-  void _dsp (std::ostream&) const override {} ;
+    bool erase(const _Info &v) override;
+    bool erase(ptrdiff_t i, const _Info &v);
 
-  // Destructor
-  ~Cont () noexcept = default;
+    const _Info& find(const _Info &v)  const noexcept override;
+
+    // Output
+    void _dsp (std::ostream&) const override {} ;
+
+    // Destructor
+    ~Cont () noexcept = default;
 };
 
-
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::find(const T& v) const {
+const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
     return _BST::find(v);
 }
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const _Info& v) {           // probleme : pas possible de check si Vect[i] == nullptr !!
+const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
+
+    //Cont<T>::_Ptr2Info y = new Info (idx, *Cont_base<T>::_ptr(v));
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
-            _BST::erase(v);
-            _Vect::operator[](idx) = _BST::insert(v);
+            if (!_Vect::operator[](idx).isEmpty()) {
+                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
+            }
+            Cont_base<T>::_ptr(_Vect::operator[](idx)) = Cont_base<T>::_ptr(_BST::insert(v));           // Vect[i] points to Node of BST
+            // pointeur de Ptr_Info contenu dans Vect[idx] = pointeur de Ptr_Info contenu dans Node(v) de BST
+
         }
         else{
             throw std::domain_error("element already in Container");
@@ -200,11 +209,24 @@ const typename Cont<T>::_Info& Cont<T>::insert(std::ptrdiff_t idx, const _Info& 
 }
 
 template<typename T>
-bool Cont<T>::erase(std::ptrdiff_t i, const _Info &v) {
-    if(this[i] == v){
-        this[i] = Cont_base<T>::_EMPTY;
+bool Cont<T>::erase(std::ptrdiff_t idx, const _Info &v) {
+    if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+        _Vect::operator[](idx) = Ptr2Info() ;
         return _BST::erase(v);
     }
+    else{
+        throw std::domain_error("element not found at this position");
+    }
+}
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
+    return _Vect::operator[](idx);
+}
+
+template<typename T>
+bool Cont<T>::erase(const Cont::_Info &v) {
+    return _BST::erase(v);
 }
 
 
