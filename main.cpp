@@ -31,10 +31,16 @@ int main() {
 
         std::cout << "find(9) :" << x->find(9) << std::endl;
 
+        //x->erase(Cont_base<int>::Info(2,9));
+
         x->erase(9);
 
         std::cout << "find(9) :" << x->find(9) << std::endl;
         std::cout << x->operator[](2) << std::endl;
+
+
+
+
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;
 //        std::cout << "x = " << x << std::endl;

@@ -209,13 +209,20 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
 }
 
 template<typename T>
-bool Cont<T>::erase(std::ptrdiff_t idx, const _Info &v) {
-    if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
-        _Vect::operator[](idx) = Ptr2Info() ;
+bool Cont<T>::erase(const _Info &v) {
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+    if (idx == -1){
+        Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;
         return _BST::erase(v);
     }
-    else{
-        throw std::domain_error("element not found at this position");
+    else {
+        if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+            _Vect::operator[](idx) = Ptr2Info() ;
+            return _BST::erase(v);
+        }
+        else{
+            throw std::domain_error("element not found at this position");
+        }
     }
 }
 
@@ -224,10 +231,7 @@ const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
     return _Vect::operator[](idx);
 }
 
-template<typename T>
-bool Cont<T>::erase(const Cont::_Info &v) {
-    return _BST::erase(v);
-}
+
 
 
 
