@@ -26,6 +26,10 @@ int main() {
 
         std::cout << "find(12) :" << x->find(12) << std::endl;
 
+        x->erase(t);
+
+        std::cout << "find(12) :" << x->find(12) << std::endl;
+
 
 //        std::cout << "x.dim = " << x.dim() << std::endl;
 //        std::cout << "x = " << x << std::endl;

@@ -186,8 +186,6 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{    
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
-
-    //Cont<T>::_Ptr2Info y = new Info (idx, *Cont_base<T>::_ptr(v));
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){
         throw std::domain_error("no index specified");
