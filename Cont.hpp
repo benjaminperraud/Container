@@ -68,15 +68,11 @@ const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY att
 template <typename T>
 class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base ?
   friend class Cont_base<T>;   // for _index static methods
-
+  std::ptrdiff_t _index = -1;
   const T _data{};
   friend struct _Cont_base::_Base<Info>;
   constexpr void _dsp (std::ostream& out) const {out << _data;}
 public:
-
-
-    std::ptrdiff_t _index = -1;
-
   // Traits
   using value_type      = T;
   using reference       = T&;
@@ -156,34 +152,19 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
 
-    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
-
-        //std::cout << _Vect::print()._index << std::endl;
-
-
-    }           // constructor with maximum size of Cont
+    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
     //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
     inline const _Info& operator[] (std::ptrdiff_t) const;
-
     const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
-
-    const _Info& test(const _Info &v){
-        std::ptrdiff_t idx = Cont_base<T>::_index(v);
-        std::cout << "index = " << idx << std::endl;
-        return v;
-    }
-
     bool erase(const _Info &v) override;
-
     const _Info& find(const _Info &v) const noexcept override;
 
     // Output
     void _dsp (std::ostream&) const override {} ;
-
     // Destructor
     ~Cont () noexcept = default;
 };
@@ -192,7 +173,6 @@ public:
 //const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
 //    return _BST::find(v);
 //}
-
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
@@ -235,7 +215,6 @@ bool Cont<T>::erase(const _Info &v) {
     }
 }
 
-
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
@@ -254,7 +233,6 @@ template<typename T>
 const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
     return _Vect::operator[](idx);
 }
-
 
 
 // Deduction guides ==========================================================
