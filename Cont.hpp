@@ -120,7 +120,7 @@ public:
     {return _ptr->_data == i._ptr->_data;}
 
   // Destructor
-  ~Ptr2Info () noexcept {delete _ptr;}
+  //~Ptr2Info () noexcept {delete _ptr;}
 }; // Ptr2Info
 
 namespace _Cont_base {
@@ -150,10 +150,8 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-
-    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
-    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}           // constructor with maximum size of Cont
-
+    //explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
+    //explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}           // constructor with maximum size of Cont
 
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 

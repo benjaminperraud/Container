@@ -33,7 +33,6 @@ int main() {
 //        std::cout << j->at(15) << std::endl;
 //        std::cout << j->dim() << std::endl;
 
-
         Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(50);   // one parameter constructor
         //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
