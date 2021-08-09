@@ -118,6 +118,9 @@ public:
     {return _ptr->_data < i._ptr->_data;}
   constexpr bool operator== (const Ptr2Info& i) const noexcept
     {return _ptr->_data == i._ptr->_data;}
+
+  // Destructor
+  ~Ptr2Info () noexcept {delete _ptr;}
 }; // Ptr2Info
 
 namespace _Cont_base {
@@ -127,9 +130,6 @@ namespace _Cont_base {
 // Main class ================================================================
 
 template <typename T>
-
-//class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
-
 class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
     using _Base = Cont_base<T>;
     using _Ptr2Info = typename _Base::Ptr2Info;
@@ -140,10 +140,6 @@ class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>,
     using _BST  = BST<_Info>;
     using _Base::_index;
     using _Base::_ptr;
-
-    // Attributs
-    // std::size_t _max = 0;   // maximum size of Cont (pas besoin car déjà dans Vect?)
-
 public:
     // Traits
     using value_type      = T;
@@ -156,11 +152,16 @@ public:
 
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
+    //constexpr Cont(const Vect<T>&) noexcept: _BST(), _Vect(){}           // constructor with maximum size of Cont
+
+    constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
+
     //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-    inline const _Info& operator[] (std::ptrdiff_t) const;
+    inline const _Info& operator[] (std::ptrdiff_t) const;              // à arranger
+
     const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
     bool erase(const _Info &v) override;
     const _Info& find(const _Info &v) const noexcept override;
@@ -170,11 +171,6 @@ public:
     // Destructor
     ~Cont () noexcept = default;
 };
-
-//template<typename T>
-//const typename Cont<T>::_Info& Cont<T>::find(const _Info& v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
-//    return _BST::find(v);
-//}
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
@@ -235,7 +231,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
         if(_Vect::operator[](idx) == v){
             _BST::find(v);
         }
-        else return _BST::_NOT_FOUND;
+        else return _BST::_NOT_FOUND;       // no exception because base virtual method is noexcept
     }
 }
 
@@ -252,5 +248,6 @@ Cont (const Vect<T>&) -> Cont<typename T::value_type>;
 
 template <typename T>
 Cont (const BST<T>&) -> Cont<typename T::value_type>;
+
 
 #endif // _CONT_H_
