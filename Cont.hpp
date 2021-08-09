@@ -58,8 +58,9 @@ public:
   constexpr Cont_base (const Cont_base&) noexcept = default;
   constexpr Cont_base (Cont_base&& c) noexcept: _used(c._used) {c._used = 0;}
   virtual ~Cont_base () noexcept = default;
-}; // Cont_base<T>
+};
 
+// Cont_base<T>
 template <typename T>
 const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY attribute initialize
 
@@ -94,7 +95,7 @@ public:
 
 template <typename T>
 class Cont_base<T>::Ptr2Info: public _Cont_base::_Base<typename Cont_base<T>::Ptr2Info> {
-  friend class Cont_base<T>;   // for _ptr static methods
+    friend class Cont_base<T>;   // for _ptr static methods
   const Info *_ptr = nullptr;
   friend struct _Cont_base::_Base<Ptr2Info>;
   constexpr void _dsp (std::ostream& out) const
@@ -106,7 +107,8 @@ public:
   using const_reference = const T&;
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
-  constexpr operator const Info& () const noexcept     // implicit cast
+  constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};            // implicit conversion from T to Ptr2Info
+  constexpr operator const Info& () const noexcept       // implicit cast
     {return _ptr ? *_ptr : _EMPTY;}
     constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const Info
     {return _ptr ? *_ptr : _EMPTY;}
@@ -128,7 +130,7 @@ template <typename T>
 
 //class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Ptr2Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
 
-class Cont final: public Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
+class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>, public Vect<typename Cont_base<T>::Ptr2Info> {
     using _Base = Cont_base<T>;
     using _Ptr2Info = typename _Base::Ptr2Info;
     using _Info = typename _Base::Info;
