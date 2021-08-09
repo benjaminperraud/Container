@@ -18,39 +18,32 @@ int main() {
 
         //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
+        Cont<int> *x = new Cont<int>(20);   // one parameter constructor
+
         //Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(50);   // one parameter constructor
 
 
-        Vect<Cont_base<int>::Ptr2Info> x = Cont<int>(50);   // one parameter constructor
+        Vect<Cont_base<int>::Ptr2Info> v = Cont<int>(50);   // one parameter constructor
 
-        x[2] = 5;
+        v[2] = 5;
 
-
-        //x->operator[](7) = 5;
-
-        std::cout << x[3] << std::endl;
-        std::cout << x.at(2) << std::endl;
+        std::cout << v[3] << std::endl;
+        std::cout << v.at(2) << std::endl;
 
 
-
-//        x->insert(t);    // conversion de int vers Info implicit ?
-//
-//        std::cout << "find(t) :" << x->find(t) << std::endl;
-//        std::cout << "find(Info(2,12)) :" << x->find(Cont_base<int>::Info(2,12)) << std::endl;
-//
-//        std::cout << x->operator[](15) << std::endl;
-//        std::cout << "find(12) :" << x->find(12) << std::endl;
-//        x->erase(t);
-//        std::cout << "find(12) :" << x->find(12) << std::endl;
-//        x->insert(Cont_base<int>::Info(2,9));    // conversion de int vers Ptr_Info implicit !           -> pas de polymoprhisme possible car méthode pas redefinissable !
-//        std::cout << x->operator[](2) << std::endl;
-//        std::cout << "find(9) :" << x->find(9) << std::endl;
-//
-//        x->erase(9);
-//        std::cout << "find(9) :" << x->find(9) << std::endl;
-//        std::cout << x->operator[](2) << std::endl;
-
-
+        x->insert(t);    // conversion de int vers Info implicit ?
+        std::cout << "find(t) :" << x->find(t) << std::endl;
+        std::cout << "find(Info(2,12)) :" << x->find(Cont_base<int>::Info(2,12)) << std::endl;
+        std::cout << x->operator[](15) << std::endl;
+        std::cout << "find(12) :" << x->find(12) << std::endl;
+        x->erase(t);
+        std::cout << "find(12) :" << x->find(12) << std::endl;
+        x->insert(Cont_base<int>::Info(2,9));    // conversion de int vers Ptr_Info implicit ?           -> pas de polymoprhisme possible car méthode pas redefinissable !
+        std::cout << x->operator[](2) << std::endl;
+        std::cout << "find(9) :" << x->find(9) << std::endl;
+        x->erase(9);
+        std::cout << "find(9) :" << x->find(9) << std::endl;
+        std::cout << x->operator[](2) << std::endl;
 
 //        std::cout << "x[1] = " << x[1] << std::endl;
 //        x[0] = i; x[2] = 1515;

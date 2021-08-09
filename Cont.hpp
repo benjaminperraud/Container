@@ -184,10 +184,10 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
-        //if(!static_cast<_BST*>(this)->_BST::exists(v)){
             if (!_Vect::operator[](idx).isEmpty()) {
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
             }
+            Cont_base<T>::_used += 1;
             Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to Node of BST
         }
         else{
@@ -204,12 +204,20 @@ bool Cont<T>::erase(const _Info &v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){
         Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;
-        _BST::erase(v);
+        if(_BST::erase(v)){
+            Cont_base<T>::_used -= 1;
+            return true;
+        }
+        else return false;
     }
     else {
         if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
             _Vect::operator[](idx) = Ptr2Info() ;
-            _BST::erase(v);
+            if(_BST::erase(v)){
+                Cont_base<T>::_used -= 1;
+                return true;
+            }
+            else return false;
         }
         else{
             throw std::domain_error("element not found at this position");
