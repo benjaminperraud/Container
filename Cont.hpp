@@ -150,8 +150,12 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-    //explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
-    //explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}           // constructor with maximum size of Cont
+    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){
+        for (std::size_t i = 0; i < v.dim(); ++i){
+            _BST::insert(v.at(i));
+        }
+    }           // il faut mettre à jour l'arbre en conséquence
+    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}
 
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
@@ -166,6 +170,8 @@ public:
     // Destructor
     ~Cont () noexcept = default;
 };
+
+
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {

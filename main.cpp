@@ -21,26 +21,34 @@ int main() {
 
         //Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
 
-//        Cont<int> *j = new Cont(Vect<Cont_base<int>::Ptr2Info>(50));          // deduction guide donc pas de <T> à mettre avant Cont;
-//
-//        std::cout << j->operator[](3) << std::endl;
-//
-//        //j->operator[](2) = 5;                                             // compile pas car de type Cont, pas de modificateur de _val
-//
-//        j->insert(t);
-//
-//        std::cout << j->operator[](15) << std::endl;
-//        std::cout << j->at(15) << std::endl;
-//        std::cout << j->dim() << std::endl;
+        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(20);
+        x[1] = 1;
+        x[2] = 2;
+        x[15] = 12;
 
-        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(50);   // one parameter constructor
-        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
 
-        v->operator[](2) = 5;
+        Cont<int> *j = new Cont(x);          // deduction guide donc pas de <T> à mettre avant Cont;
 
-        std::cout << v->at(2) << std::endl;
-        std::cout << v->operator[](2) << std::endl;
-        std::cout << v->dim() << std::endl;
+        std::cout << j->operator[](3) << std::endl;
+
+        //j->operator[](2) = 5;                                             // compile pas car de type Cont, pas de modificateur de _val
+
+        //j->insert(t);
+
+        std::cout << j->operator[](15) << std::endl;
+        std::cout << j->at(15) << std::endl;
+        std::cout << j->dim() << std::endl;
+
+        std::cout << "find(t) :" << j->find(t) << std::endl;
+
+//        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(50);   // one parameter constructor
+//        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
+//
+//        v->operator[](2) = 5;
+//
+//        std::cout << v->at(2) << std::endl;
+//        std::cout << v->operator[](2) << std::endl;
+//        std::cout << v->dim() << std::endl;
 
 //
 //
