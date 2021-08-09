@@ -149,14 +149,11 @@ public:
     using Ptr2Info = const _Ptr2Info;
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
-
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
-    //constexpr Cont(const Vect<T>&) noexcept: _BST(), _Vect(){}           // constructor with maximum size of Cont
+    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
+    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}           // constructor with maximum size of Cont
 
-    constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){}           // constructor with maximum size of Cont
-
-    //explicit constexpr Cont(std::size_t t) noexcept: BST<T>(), Vect<T>(t){}           // constructor with maximum size of Cont
 
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
