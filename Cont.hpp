@@ -140,6 +140,7 @@ class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>,
     using _BST  = BST<_Info>;
     using _Base::_index;
     using _Base::_ptr;
+    inline static std::size_t cout ;
 public:
     // Traits
     using value_type      = T;
@@ -151,12 +152,32 @@ public:
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
     explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){
-        for (std::size_t i = 0; i < v.dim(); ++i){
+        for (std::size_t i = 0; i < v.dim(); ++i){  // il faut mettre à jour l'arbre en conséquence
             _BST::insert(v.at(i));
         }
-    }           // il faut mettre à jour l'arbre en conséquence
-    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){}
+    }
 
+    explicit constexpr Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
+
+    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){
+//        void (Cont::*set)(const _Info &v);//create non-static function pointer
+//        set = &Cont::func;
+        //my_func_ptr = some_func;
+        //_BST::traverse(this->* set)();
+        // _BST::traverse(&Cont::func);
+
+        _BST::traverse(func);
+
+        std::cout << cout << std::endl;
+        //auto *vect = new _Vect(Cont_base<T>::_used);
+
+        //*this = new Cont<int>(v, _Vect(Cont_base<T>::_used));
+        new (this) Cont<int>(v, _Vect(Cont_base<T>::_used));
+    }
+
+
+
+    static void func(const _Info &v);
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
     inline const _Info& operator[] (std::ptrdiff_t) const;              // à arranger
@@ -167,11 +188,29 @@ public:
 
     // Output
     void _dsp (std::ostream&) const override {} ;
+
+    //copie/transfert
+    inline Cont<T>& operator= (const Cont&);
+    inline Cont<T>& operator= (Cont&&);
+
     // Destructor
     ~Cont () noexcept = default;
+
+    //Cont(Cont<int> *pCont);
 };
 
+//template<typename T>
+//Cont<T>::Cont(Cont<int> *pCont) {
+//
+//}
 
+template<typename T>
+void Cont<T>::func(const _Info &v) {
+    cout += 1 ;
+    //_Vect::operator[](Cont_base<T>::_index(v)) = v ;
+//    std::cout << v << std::endl;
+//    Cont_base<T>::_used += 1;
+}
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
@@ -240,6 +279,17 @@ template<typename T>
 const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
     return _Vect::operator[](idx);
 }
+
+template<typename T>
+Cont<T>& Cont<T>::operator=(const Cont &) {
+    return *this;
+}
+
+template<typename T>
+Cont<T>& Cont<T>::operator=(Cont &&) {
+    return *this;
+}
+
 
 
 // Deduction guides ==========================================================

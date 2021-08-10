@@ -14,32 +14,39 @@ int main() {
         std::cout << "***" << std::endl;
 
         Cont_base<int>::Info t(15,12);
+        Cont_base<int>::Info info(2,5);
+
         //Cont_base<int>::PtrInfo ptr(15,12);
         //Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(5);
-
         //Vect<int> x = Vect<int>(5);
-
         //Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
 
         Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(20);
+
         x[1] = 1;
         x[2] = 2;
         x[15] = 12;
 
+        BST<Cont_base<int>::Info> m = BST<Cont_base<int>::Info>();
+        m.insert(t);
+        m.insert(info);
 
-        Cont<int> *j = new Cont(x);          // deduction guide donc pas de <T> à mettre avant Cont;
+        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;
 
-        std::cout << j->operator[](3) << std::endl;
+        std::cout << "find(t) :" << j->find(t) << std::endl;
+
+        std::cout << "index 3" << j->operator[](3) << std::endl;
+        std::cout << "index 2" << j->operator[](2) << std::endl;
 
         //j->operator[](2) = 5;                                             // compile pas car de type Cont, pas de modificateur de _val
 
         //j->insert(t);
-
-        std::cout << j->operator[](15) << std::endl;
-        std::cout << j->at(15) << std::endl;
-        std::cout << j->dim() << std::endl;
-
-        std::cout << "find(t) :" << j->find(t) << std::endl;
+//
+//        std::cout << j->operator[](15) << std::endl;
+//        std::cout << j->at(15) << std::endl;
+//        std::cout << j->dim() << std::endl;
+//
+//        std::cout << "find(t) :" << j->find(t) << std::endl;
 
 //        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(50);   // one parameter constructor
 //        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
