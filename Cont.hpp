@@ -34,7 +34,7 @@ std::ostream& operator<< (std::ostream& out, const _Cont_base::_Base<U>& b)
 template <typename T>
 class Cont_base { // abstract
 public:
-    class Info;               // manière de rendre la classe Info locale (pas de place en mémoire) -> éviter d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
+    class Info;               // manière de rendre la classe Info locale  -> évite d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
     class Ptr2Info;
 protected:
   static const Info _EMPTY;
@@ -221,13 +221,14 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
-            if (!_Vect::operator[](idx).isEmpty()) {
+            if (!_Vect::operator[](idx).isEmpty()) {            // check if index is occuped, if yes erase it from the BST
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
             }
             Cont_base<T>::_used += 1;
             Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
         }
         else{
+            std::cout << "fdp ? " << std::endl;
             throw std::domain_error("element already in Container");
         }
     }

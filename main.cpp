@@ -31,6 +31,8 @@ int main() {
         bst->insert(Cont_base<int>::Info(12,17));
         std::cout << "find(15) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
         std::cout << "find(17) : " << bst->find(17) << std::endl;
+
+
         //std::cout << "find((10,15)) : " << bst->find((10,15)) << std::endl;             // -> fonctionne pas
         std::cout << "erase(17) : " << bst->erase(Cont_base<int>::Info(12,17)) << std::endl;
         std::cout << "erase(15) : " << bst->erase(15) << std::endl;
@@ -50,7 +52,9 @@ int main() {
         std::cout << "cont[7] : " << cont->at(7) << std::endl;          // Vect::at index out of range
         std::cout << "cont[7] : " << cont->operator[](7) << std::endl;          // Vect::at index out of range
         std::cout << "_used : " << cont->getUsed() << std::endl;
-
+        cont->insert(Cont_base<int>::Info(9,52));
+        std::cout << "cont[4]: " << cont->operator[](4) << std::endl;
+        std::cout << "cont[7]: " << cont->operator[](7) << std::endl;
 //
 //        BST<Cont_base<int>::Info> arb ;
 //
