@@ -150,7 +150,14 @@ public:
     using Ptr2Info = const _Ptr2Info;
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
-    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
+    //explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
+
+
+    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
+        Cont_base<T>::_used = 32;
+    }           // constructor with maximum size of Cont
+
+
     explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){
         for (std::size_t i = 0; i < v.dim(); ++i){  // il faut mettre à jour l'arbre en conséquence
             _BST::insert(v.at(i));
@@ -171,11 +178,13 @@ public:
         std::cout << cout << std::endl;
         //auto *vect = new _Vect(Cont_base<T>::_used);
 
-        //*this = new Cont<int>(v, _Vect(Cont_base<T>::_used));
-        new (this) Cont<int>(v, _Vect(Cont_base<T>::_used));
+        *this = Cont<int>(v, _Vect(Cont_base<T>::_used));
+        //new (this) Cont<int>(v, _Vect(Cont_base<T>::used()));
+
+        std::cout << "_used :" << this->_used << std::endl;
+        std::cout << "1find(t) :" << this->find(Info(15,12)) << std::endl;
+        std::cout << "2find(t) :" << v.find(Info(15,12)) << std::endl;
     }
-
-
 
     static void func(const _Info &v);
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
@@ -198,11 +207,6 @@ public:
 
     //Cont(Cont<int> *pCont);
 };
-
-//template<typename T>
-//Cont<T>::Cont(Cont<int> *pCont) {
-//
-//}
 
 template<typename T>
 void Cont<T>::func(const _Info &v) {
@@ -281,7 +285,9 @@ const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(const Cont &) {
+Cont<T>& Cont<T>::operator=(const Cont &v) {
+    Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base
+    std::cout << this->Cont_base<T>::_used << std::endl;
     return *this;
 }
 
@@ -289,7 +295,6 @@ template<typename T>
 Cont<T>& Cont<T>::operator=(Cont &&) {
     return *this;
 }
-
 
 
 // Deduction guides ==========================================================

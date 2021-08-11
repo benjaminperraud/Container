@@ -16,27 +16,46 @@ int main() {
         Cont_base<int>::Info t(15,12);
         Cont_base<int>::Info info(2,5);
 
+//        BST<Cont_base<int>::Info> arb ;
+//        arb.insert(t);
+//        std::cout << "find(t) :" << arb.find(t) << std::endl;
+//
+//        BST<Cont_base<int>::Info> bra = BST<Cont_base<int>::Info>(arb) ;
+//        std::cout << "find(t) :" << bra.find(t) << std::endl;
+
         //Cont_base<int>::PtrInfo ptr(15,12);
         //Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(5);
         //Vect<int> x = Vect<int>(5);
         //Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
 
-        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(20);
+//        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(20);
+//        BST<Cont_base<int>::Info> m = BST<Cont_base<int>::Info>();
+//
+//        x[1] = 1;
+//        x[2] = 2;
+//        x[15] = 12;
+//
+//
+//        m.insert(t);
+//        m.insert(info);
+//
+//        std::cout << "find(t) :" << m.find(t) << std::endl;
 
-        x[1] = 1;
-        x[2] = 2;
-        x[15] = 12;
+        Cont<int> cont = Cont<int>(5);
 
-        BST<Cont_base<int>::Info> m = BST<Cont_base<int>::Info>();
-        m.insert(t);
-        m.insert(info);
+        Cont<int> cont2 = Cont<int>();
 
-        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;
+        cont2 = cont ;
 
-        std::cout << "find(t) :" << j->find(t) << std::endl;
 
-        std::cout << "index 3" << j->operator[](3) << std::endl;
-        std::cout << "index 2" << j->operator[](2) << std::endl;
+
+
+//        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;
+//
+//        std::cout << "find(t) :" << j->find(t) << std::endl;
+//
+//        std::cout << "index 3" << j->operator[](3) << std::endl;
+//        std::cout << "index 2" << j->operator[](2) << std::endl;
 
         //j->operator[](2) = 5;                                             // compile pas car de type Cont, pas de modificateur de _val
 
