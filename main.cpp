@@ -41,13 +41,22 @@ int main() {
 //
 //        std::cout << "find(t) :" << m.find(t) << std::endl;
 
-        Cont<int> cont = Cont<int>(5);
+        Cont<int> cont = Cont<int>(60);
+
+        cont.insert(t);
+
+        std::cout << "find t : " << cont.find(t) << std::endl;
 
         Cont<int> cont2 = Cont<int>();
 
         cont2 = cont ;
 
+        std::cout << "find 9 in cont2 :" << cont2.find(9) << std::endl;
 
+        std::cout << "find 15 in cont2 :" << cont2.find(15) << std::endl;
+
+
+        std::cout << "find t in cont2 : " << cont2.find(t) << std::endl;
 
 
 //        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;

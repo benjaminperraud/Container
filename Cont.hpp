@@ -275,7 +275,8 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
         if(_Vect::operator[](idx) == v){
             _BST::find(v);
         }
-        else return _BST::_NOT_FOUND;       // no exception because base virtual method is noexcept
+        else return _BST::_NOT_FOUND;       // no exception because base virtual method is noexcept -> wrong ?
+        //else std::cout<< "pas trouvé " << std::endl;
     }
 }
 
@@ -286,8 +287,9 @@ const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const Cont &v) {
-    Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base
-    std::cout << this->Cont_base<T>::_used << std::endl;
+    Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
+    _BST::operator=(v) ;
+    _Vect::operator=(v) ;
     return *this;
 }
 
