@@ -41,22 +41,18 @@ int main() {
 //
 //        std::cout << "find(t) :" << m.find(t) << std::endl;
 
-        Cont<int> cont = Cont<int>(60);
+        Cont<int> cont ;
 
-        cont.insert(t);
+        //std::cout << "find t : " << cont.find(t) << std::endl;          -> erreur si cont pas initalisé, normal ?
 
-        std::cout << "find t : " << cont.find(t) << std::endl;
-
-        Cont<int> cont2 = Cont<int>();
-
-        cont2 = cont ;
-
-        std::cout << "find 9 in cont2 :" << cont2.find(9) << std::endl;
-
-        std::cout << "find 15 in cont2 :" << cont2.find(15) << std::endl;
+        cont = Cont<int>(30);
 
 
-        std::cout << "find t in cont2 : " << cont2.find(t) << std::endl;
+        std::cout << "find 9 in cont2 :" << cont.find(9) << std::endl;
+        std::cout << "find 15 in cont2 :" << cont.find(15) << std::endl;
+        std::cout << "find t in cont2 : " << cont.find(t) << std::endl;
+
+        std::cout << "_used : " << cont.getUsed() << std::endl;
 
 
 //        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;

@@ -150,13 +150,7 @@ public:
     using Ptr2Info = const _Ptr2Info;
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
-    //explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-
-
-    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){
-        Cont_base<T>::_used = 32;
-    }           // constructor with maximum size of Cont
-
+    explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
     explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){
         for (std::size_t i = 0; i < v.dim(); ++i){  // il faut mettre à jour l'arbre en conséquence
@@ -178,7 +172,7 @@ public:
         std::cout << cout << std::endl;
         //auto *vect = new _Vect(Cont_base<T>::_used);
 
-        *this = Cont<int>(v, _Vect(Cont_base<T>::_used));
+        *this = Cont<int>(v, _Vect(Cont_base<T>::_used));           // copy assignement or move assignement ?
         //new (this) Cont<int>(v, _Vect(Cont_base<T>::used()));
 
         std::cout << "_used :" << this->_used << std::endl;
@@ -194,6 +188,9 @@ public:
     const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
     bool erase(const _Info &v) override;
     const _Info& find(const _Info &v) const noexcept override;
+
+    // Getter
+    constexpr std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
 
     // Output
     void _dsp (std::ostream&) const override {} ;
@@ -286,15 +283,23 @@ const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(const Cont &v) {
-    Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
-    _BST::operator=(v) ;
-    _Vect::operator=(v) ;
+Cont<T>& Cont<T>::operator=(const Cont &v) {     // manque des delete ?
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+        _BST::operator=(v) ;
+        _Vect::operator=(v) ;
+    }
     return *this;
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(Cont &&) {
+Cont<T>& Cont<T>::operator=(Cont &&v) {
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
+        _BST::operator=(v) ;
+        _Vect::operator=(v) ;
+    }
+    v.Cont_base<T>::_used = 0;
     return *this;
 }
 
