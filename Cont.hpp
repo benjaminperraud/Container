@@ -183,8 +183,6 @@ public:
     static void func(const _Info &v);
     //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
 
-    inline const _Info& operator[] (std::ptrdiff_t) const;              // à arranger
-
     const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
     bool erase(const _Info &v) override;
     const _Info& find(const _Info &v) const noexcept override;
@@ -218,16 +216,16 @@ void Cont<T>::func(const _Info &v) {
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
-    if (idx == -1){
+    if (idx == -1){                 // implicit conversion to Info with default index -1
         throw std::domain_error("no index specified");
     }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(v)){
             if (!_Vect::operator[](idx).isEmpty()) {
-                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position
+                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
             }
             Cont_base<T>::_used += 1;
-            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to Node of BST
+            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
         }
         else{
             throw std::domain_error("element already in Container");
@@ -241,8 +239,8 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
 template<typename T>
 bool Cont<T>::erase(const _Info &v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
-    if (idx == -1){
-        Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;
+    if (idx == -1){         // either no index specified but v in BST, or v not in BST
+        if(_BST::exists(v)) Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
         if(_BST::erase(v)){
             Cont_base<T>::_used -= 1;
             return true;
@@ -274,18 +272,12 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
         if(_Vect::operator[](idx) == v){
             _BST::find(v);
         }
-        else return _BST::_NOT_FOUND;       // no exception because base virtual method is noexcept -> wrong ?
-        //else std::cout<< "pas trouvé " << std::endl;
+        else return _BST::_NOT_FOUND;       // no exception threw here because base virtual method is noexcept
     }
 }
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
-    return _Vect::operator[](idx);
-}
-
-template<typename T>
-Cont<T>& Cont<T>::operator=( const _BST &v) {     // manque des delete ?
+Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
     }

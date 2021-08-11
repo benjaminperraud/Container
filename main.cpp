@@ -8,27 +8,49 @@ int main() {
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
 
-        std::cout << "Utilisation de Vect seul : " << std::endl;
+        std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
-        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(30);   // one parameter constructor
-        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
+        Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
 
-        v->operator[](2) = 5;
-        std::cout << "v[2] : " << v->at(2) << std::endl;
-        std::cout << "v[2] : " << v->operator[](2) << std::endl;
-        std::cout << "dim v : " << v->dim() << std::endl;
+        vect->operator[](2) = 5;
+        std::cout << "v[2] : " << vect->at(2) << std::endl;
+        std::cout << "v[2] : " << vect->operator[](2) << std::endl;
+        std::cout << "dim v : " << vect->dim() << std::endl;
 
-        *v = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});   // one parameter constructor
-        std::cout << "v[2] : " << v->at(2) << std::endl;
-        std::cout << "v[2] : " << v->operator[](2) << std::endl;
-        std::cout << "dim v : " << v->dim() << std::endl;
+        *vect = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});
+        std::cout << "v[2] : " << vect->at(2) << std::endl;
+        std::cout << "v[2] : " << vect->operator[](2) << std::endl;
+        std::cout << "dim v : " << vect->dim() << std::endl;
 
-        std::cout << "Utilisation de BST seul : " << std::endl;
+        std::cout << "*** Utilisation d'un Cont de type effectif BST ***" << std::endl;
 
+        Cont_base<int>::Info info(12,15);
+        BST<Cont_base<int>::Info> *bst = new Cont<int>(20);
+        bst->insert(info);
+        std::cout << "find(info) : " << bst->find(info) << std::endl;
+        bst->insert(Cont_base<int>::Info(12,17));
+        std::cout << "find(15) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
+        std::cout << "find(17) : " << bst->find(17) << std::endl;
+        //std::cout << "find((10,15)) : " << bst->find((10,15)) << std::endl;             // -> fonctionne pas
+        std::cout << "erase(17) : " << bst->erase(Cont_base<int>::Info(12,17)) << std::endl;
+        std::cout << "erase(15) : " << bst->erase(15) << std::endl;
+        std::cout << "find(17) : " << bst->find(17) << std::endl;
 
+        std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
 
-//        Cont_base<int>::Info t(15,12);
-//        Cont_base<int>::Info info(2,5);
+        Cont_base<int>::Info t(7,52);
+
+        Cont<int> *cont = new Cont<int>(30) ;
+
+        //std::cout << "cont find (t) : " << cont.find(t) << std::endl;          // -> erreur si cont pas initialisé (Cont cont;), normal ?
+
+        cont->insert(t);
+        cont->insert(info);
+        std::cout << "find (t) : " << cont->find(t) << std::endl;
+        std::cout << "cont[7] : " << cont->at(7) << std::endl;          // Vect::at index out of range
+        std::cout << "cont[7] : " << cont->operator[](7) << std::endl;          // Vect::at index out of range
+        std::cout << "_used : " << cont->getUsed() << std::endl;
+
 //
 //        BST<Cont_base<int>::Info> arb ;
 //
@@ -49,20 +71,6 @@ int main() {
 //
 //
 //
-//        BST<Cont_base<int>::Info> m = BST<Cont_base<int>::Info>();
-//        m.insert(t);
-//        m.insert(info);
-//
-//        std::cout << "find(t) :" << m.find(t) << std::endl;
-//
-//        Cont<int> cont = Cont<int>(10) ;
-//
-//        //std::cout << "cont find (t) : " << cont.find(t) << std::endl;          // -> erreur si cont pas initialisé (Cont cont;), normal ?
-//
-//        std::cout << "find 15 in cont :" << cont.find(15) << std::endl;
-//        std::cout << "find t in cont : " << cont.find(t) << std::endl;
-//
-//        std::cout << "_used : " << cont.getUsed() << std::endl;
 
 
 //        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;
