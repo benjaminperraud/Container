@@ -169,10 +169,10 @@ public:
 
         _BST::traverse(func);
 
-        std::cout << cout << std::endl;
+        std::cout << "cout = " << cout << std::endl;
         //auto *vect = new _Vect(Cont_base<T>::_used);
 
-        *this = Cont<int>(v, _Vect(Cont_base<T>::_used));           // copy assignement or move assignement ?
+        //*this = Cont<int>(v, _Vect(cout));           // copy assignement or move assignement ?
         //new (this) Cont<int>(v, _Vect(Cont_base<T>::used()));
 
         std::cout << "_used :" << this->_used << std::endl;
@@ -196,8 +196,10 @@ public:
     void _dsp (std::ostream&) const override {} ;
 
     //copie/transfert
-    inline Cont<T>& operator= (const Cont&);
-    inline Cont<T>& operator= (Cont&&);
+    //inline Cont<T>& operator= (const Cont&);
+    //inline Cont<T>& operator= (Cont&&);
+
+    inline Cont<T>& operator=( const _BST &v);
 
     // Destructor
     ~Cont () noexcept = default;
@@ -283,25 +285,42 @@ const typename Cont<T>::_Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(const Cont &v) {     // manque des delete ?
-    if (this != &v){
-        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-        _BST::operator=(v) ;
-        _Vect::operator=(v) ;
+Cont<T>& Cont<T>::operator=( const _BST &v) {     // manque des delete ?
+    if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+        std::cout << "bon type" << std::endl;
     }
+    else{
+        throw std::bad_cast();
+    }
+
+//    if (this != &v){
+//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+//        _BST::operator=(v) ;
+//        _Vect::operator=(v) ;
+//    }
     return *this;
 }
 
-template<typename T>
-Cont<T>& Cont<T>::operator=(Cont &&v) {
-    if (this != &v){
-        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
-        _BST::operator=(v) ;
-        _Vect::operator=(v) ;
-    }
-    v.Cont_base<T>::_used = 0;
-    return *this;
-}
+//template<typename T>
+//Cont<T>& Cont<T>::operator=(const Cont &v) {     // manque des delete ?
+//    if (this != &v){
+//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+//        _BST::operator=(v) ;
+//        _Vect::operator=(v) ;
+//    }
+//    return *this;
+//}
+
+//template<typename T>
+//Cont<T>& Cont<T>::operator=(Cont &&v) {
+//    if (this != &v){
+//        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
+//        _BST::operator=(v) ;
+//        _Vect::operator=(v) ;
+//    }
+//    v.Cont_base<T>::_used = 0;
+//    return *this;
+//}
 
 
 // Deduction guides ==========================================================

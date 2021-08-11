@@ -1,11 +1,6 @@
 #include <iostream>
-#include <typeinfo>
 
 #include "Cont.hpp"
-
-#include <vector>
-
-
 
 int main() {
 
@@ -13,46 +8,61 @@ int main() {
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
 
-        Cont_base<int>::Info t(15,12);
-        Cont_base<int>::Info info(2,5);
+        std::cout << "Utilisation de Vect seul : " << std::endl;
 
+        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(30);   // one parameter constructor
+        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
+
+        v->operator[](2) = 5;
+        std::cout << "v[2] : " << v->at(2) << std::endl;
+        std::cout << "v[2] : " << v->operator[](2) << std::endl;
+        std::cout << "dim v : " << v->dim() << std::endl;
+
+        *v = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});   // one parameter constructor
+        std::cout << "v[2] : " << v->at(2) << std::endl;
+        std::cout << "v[2] : " << v->operator[](2) << std::endl;
+        std::cout << "dim v : " << v->dim() << std::endl;
+
+        std::cout << "Utilisation de BST seul : " << std::endl;
+
+
+
+//        Cont_base<int>::Info t(15,12);
+//        Cont_base<int>::Info info(2,5);
+//
 //        BST<Cont_base<int>::Info> arb ;
-//        arb.insert(t);
-//        std::cout << "find(t) :" << arb.find(t) << std::endl;
 //
-//        BST<Cont_base<int>::Info> bra = BST<Cont_base<int>::Info>(arb) ;
-//        std::cout << "find(t) :" << bra.find(t) << std::endl;
-
-        //Cont_base<int>::PtrInfo ptr(15,12);
-        //Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(5);
-        //Vect<int> x = Vect<int>(5);
-        //Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
-
-//        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(20);
+////        Cont_base<int>::PtrInfo ptr(15,12);
+////        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(5);
+////        Vect<int> x = Vect<int>(5);
+////        Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
+//
+//        BST<Cont_base<int>::Info> *bst = new Cont<int>();
+//
+//        auto *l = new BST<Cont_base<int>::Info>();
+//
+//        auto *x = new Cont<int>(10);
+//
+//        *x = *bst;
+//        *x = *l;
+//
+//
+//
+//
 //        BST<Cont_base<int>::Info> m = BST<Cont_base<int>::Info>();
-//
-//        x[1] = 1;
-//        x[2] = 2;
-//        x[15] = 12;
-//
-//
 //        m.insert(t);
 //        m.insert(info);
 //
 //        std::cout << "find(t) :" << m.find(t) << std::endl;
-
-        Cont<int> cont ;
-
-        //std::cout << "find t : " << cont.find(t) << std::endl;          -> erreur si cont pas initalisé, normal ?
-
-        cont = Cont<int>(30);
-
-
-        std::cout << "find 9 in cont2 :" << cont.find(9) << std::endl;
-        std::cout << "find 15 in cont2 :" << cont.find(15) << std::endl;
-        std::cout << "find t in cont2 : " << cont.find(t) << std::endl;
-
-        std::cout << "_used : " << cont.getUsed() << std::endl;
+//
+//        Cont<int> cont = Cont<int>(10) ;
+//
+//        //std::cout << "cont find (t) : " << cont.find(t) << std::endl;          // -> erreur si cont pas initialisé (Cont cont;), normal ?
+//
+//        std::cout << "find 15 in cont :" << cont.find(15) << std::endl;
+//        std::cout << "find t in cont : " << cont.find(t) << std::endl;
+//
+//        std::cout << "_used : " << cont.getUsed() << std::endl;
 
 
 //        Cont<int> *j = new Cont(m);          // deduction guide donc pas de <T> à mettre avant Cont;
@@ -72,14 +82,7 @@ int main() {
 //
 //        std::cout << "find(t) :" << j->find(t) << std::endl;
 
-//        Vect<Cont_base<int>::Ptr2Info> *v = new Cont<int>(50);   // one parameter constructor
-//        //BST<Cont_base<int>::Info> *x = new Cont<int>(5);   // one parameter constructor
-//
-//        v->operator[](2) = 5;
-//
-//        std::cout << v->at(2) << std::endl;
-//        std::cout << v->operator[](2) << std::endl;
-//        std::cout << v->dim() << std::endl;
+
 
 //
 //
