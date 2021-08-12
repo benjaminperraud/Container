@@ -66,8 +66,10 @@ int main() {
 
         std::cout << "***** Copies/Transferts *****" << std::endl;
 
-        Cont<int> cont2(*cont) ;           // constructeur de copie -> conversion implicite from Cont to Vect
-        std::cout << "find (3) (3) : " << cont2.find(3) << std::endl;
+        Cont<int> cont2(*cont) ;           // constructeur de copie de Cont
+        std::cout << "find (52) (52) : " << cont2.find(52) << std::endl;
+        std::cout << "find (15) (15) : " << cont2.find(15) << std::endl;
+
         std::cout << "_used (2) " << cont2.getUsed() << std::endl;
 
         //Cont<int> cont4(*vect);             // copie dans vect puis constructeur de conversion dans Cont
@@ -189,6 +191,6 @@ int main() {
 //        std::cout << "v = " << v << std::endl;
         std::cout << "***" << std::endl;
     }
-
-
+    std::cout << ">>>" << std::endl;
+    return 0;
 }

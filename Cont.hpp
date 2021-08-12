@@ -151,12 +151,12 @@ public:
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
-    explicit constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
+    constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
 
-    explicit constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.getUsed()){
+    constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.dim()){
         std::cout << "copie d'un cont" << std::endl;
-        for (std::size_t i = 0; i < v.getUsed(); ++i){
-            _BST::insert(v.operator[](i));
+        for (std::size_t i = 0; i < v.dim(); ++i){
+            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
         }
         Cont_base<T>::_used = v.getUsed();
     }
@@ -227,11 +227,11 @@ public:
     bool erase(const _Info &v) override;
     // Getters
     const _Info& find(const _Info &v) const noexcept override;
-    inline std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
+    inline std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
 //    inline Cont<T>& operator= (const Cont&);
 //    inline Cont<T>& operator= (Cont&&);
-    inline Cont<T>& operator=(const _BST &v) ;
+    inline Cont<T>& operator=(const _BST &v) override;
     inline Cont<T>& operator=(const _Vect &v);
     // Output
     void _dsp (std::ostream&) const override {} ;
