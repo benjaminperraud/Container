@@ -91,6 +91,11 @@ public:
     {return _data == i._data;}
 }; // Info
 
+//template<typename T>
+//constexpr bool operator==(const typename Cont_base<T>::Info &i, const typename Cont_base<T>::Info &j) noexcept {
+//    return i._data == j._data && i._index == j._index;
+//}
+
 // Embedded class Ptr2Info ===================================================
 
 template <typename T>
@@ -134,13 +139,10 @@ class Cont final: private Cont_base<T>, public BST<typename Cont_base<T>::Info>,
     using _Base = Cont_base<T>;
     using _Ptr2Info = typename _Base::Ptr2Info;
     using _Info = typename _Base::Info;
-    //  using _Vect = Vect<_Ptr2Info>;
-    //  using _BST  = BST<_Ptr2Info>;
     using _Vect = Vect<_Ptr2Info>;
     using _BST  = BST<_Info>;
     using _Base::_index;
     using _Base::_ptr;
-    inline static std::size_t cout ;
 public:
     // Traits
     using value_type      = T;
@@ -152,66 +154,46 @@ public:
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
-    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){
-        for (std::size_t i = 0; i < v.dim(); ++i){  // il faut mettre à jour l'arbre en conséquence
-            _BST::insert(v.at(i));
+//    constexpr Cont (std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
+//        for(auto object : {init}) {
+//            std::cout << object << std::endl;
+//            Cont_base<T>::_used += 1;
+//        }
+//    }
+
+//    constexpr Cont (std::initializer_list<typename Cont_base<T>::Ptr2Info> &init) noexcept: _BST(), _Vect(init){ // constructor with initial list
+//        std::cout << "frero?" << std::endl;
+//        for(auto object : {init}) {
+//            std::cout << object << std::endl;
+//            Cont_base<T>::_used += 1;
+//        }
+//        std::cout << "wesh" << Cont_base<T>::_used << std::endl;
+//    }
+
+    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
+        for (std::size_t i = 0; i < v.dim(); ++i){                                  // il faut mettre à jour l'arbre en conséquence
+            _BST::insert(v.at(i));                                                  // dans le cas d'un vect pas complet ? ?
+            Cont_base<T>::_used += 1; // -> normalement dans insert (bizarre)
         }
     }
-
     explicit constexpr Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
-
-    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){
-//        void (Cont::*set)(const _Info &v);//create non-static function pointer
-//        set = &Cont::func;
-        //my_func_ptr = some_func;
-        //_BST::traverse(this->* set)();
-        // _BST::traverse(&Cont::func);
-
-        _BST::traverse(func);
-
-        std::cout << "cout = " << cout << std::endl;
-        //auto *vect = new _Vect(Cont_base<T>::_used);
-
-        //*this = Cont<int>(v, _Vect(cout));           // copy assignement or move assignement ?
-        //new (this) Cont<int>(v, _Vect(Cont_base<T>::used()));
-
-        std::cout << "_used :" << this->_used << std::endl;
-        std::cout << "1find(t) :" << this->find(Info(15,12)) << std::endl;
-        std::cout << "2find(t) :" << v.find(Info(15,12)) << std::endl;
-    }
-
-    static void func(const _Info &v);
-    //Cont (const std::initializer_list<T>& init ) noexcept: _BST(), _Vect(){}      // constructor with initial list  -> faire des insert à la suite pour construire le BST ?
-
-    const _Info& insert(const _Info &v) override ;                            // only call base method but usefull in case of Cont<> type declaration
+    // Setters
+    const _Info& insert(const _Info &v) override ;
     bool erase(const _Info &v) override;
+    // Getters
     const _Info& find(const _Info &v) const noexcept override;
+    inline std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
 
-    // Getter
-    constexpr std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
 
-    // Output
-    void _dsp (std::ostream&) const override {} ;
-
-    //copie/transfert
+    // Copies & transfers
     //inline Cont<T>& operator= (const Cont&);
     //inline Cont<T>& operator= (Cont&&);
-
-    inline Cont<T>& operator=( const _BST &v);
-
+    inline Cont<T>& operator=(const _BST &v);
+    // Output
+    void _dsp (std::ostream&) const override {} ;
     // Destructor
     ~Cont () noexcept = default;
-
-    //Cont(Cont<int> *pCont);
 };
-
-template<typename T>
-void Cont<T>::func(const _Info &v) {
-    cout += 1 ;
-    //_Vect::operator[](Cont_base<T>::_index(v)) = v ;
-//    std::cout << v << std::endl;
-//    Cont_base<T>::_used += 1;
-}
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {

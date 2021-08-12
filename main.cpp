@@ -7,16 +7,13 @@ int main() {
     std::cout << std::boolalpha << "<<<" << std::endl;
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
-
         std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
-
         vect->operator[](2) = 5;
         std::cout << "v[2] : " << vect->at(2) << std::endl;
         std::cout << "v[2] : " << vect->operator[](2) << std::endl;
         std::cout << "dim v : " << vect->dim() << std::endl;
-
         *vect = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});
         std::cout << "v[2] : " << vect->at(2) << std::endl;
         std::cout << "v[2] : " << vect->operator[](2) << std::endl;
@@ -55,6 +52,14 @@ int main() {
         cont->insert(Cont_base<int>::Info(9,52));
         std::cout << "cont[4]: " << cont->operator[](4) << std::endl;
         std::cout << "cont[7]: " << cont->operator[](7) << std::endl;
+
+        std::cout << "*****" << std::endl;
+
+        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;
+
+        std::cout << "find (3) : " << cont2->find(3) << std::endl;
+        std::cout << "cont2[4]: " << cont2->operator[](4) << std::endl;
+        std::cout << "_used " << cont2->getUsed() << std::endl;
 //
 //        BST<Cont_base<int>::Info> arb ;
 //
