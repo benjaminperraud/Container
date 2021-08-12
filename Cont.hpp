@@ -254,8 +254,9 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
     }
 }
 
+
 template<typename T>
-Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont
+Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont ??
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
     }
@@ -263,11 +264,11 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont
         throw std::bad_cast();
     }
 
-//    if (this != &v){
-//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-//        _BST::operator=(v) ;
-//        _Vect::operator=(v) ;
-//    }
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
+        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
+    }
     return *this;
 }
 

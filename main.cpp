@@ -47,7 +47,6 @@ int main() {
             std::cout << "Caught exception \"" << e.what() << std::endl;
         }
 
-
         std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
 
         Cont_base<int>::Info t(7,52);
@@ -60,7 +59,7 @@ int main() {
 
         std::cout << "*****" << std::endl;
 
-        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // pure magic
+        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list
 
         std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
         std::cout << "cont2[4] (5) : " << cont2->operator[](4) << std::endl;
@@ -68,7 +67,9 @@ int main() {
 
         // Conversions
 
+        // Cont<int> *cont3 = new Cont(cont2);          // deduction guide donc pas de <T> à mettre avant Cont;
 
+        Cont<int>
 
 
 
