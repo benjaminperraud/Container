@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "Cont.hpp"
+#include "MyType.hpp"
 
 int main() {
 

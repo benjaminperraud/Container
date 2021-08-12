@@ -153,10 +153,10 @@ public:
 
     constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
 
-    constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.dim()){
+    constexpr Cont(const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
         std::cout << "copie d'un cont" << std::endl;
         for (std::size_t i = 0; i < v.dim(); ++i){
-            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
+            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));             // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
         }
         Cont_base<T>::_used = v.getUsed();
     }
@@ -169,8 +169,8 @@ public:
         std::cout << "conversion depuis un Vect" << std::endl;
         if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
             std::cout << "bon type" << std::endl;
-            for (std::size_t i = 0; i < v.dim(); ++i){                                  // il faut mettre à jour l'arbre en conséquence
-                if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));                                                  // dans le cas d'un vect pas complet ? ?
+            for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+                if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
                 Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
             }
         }
@@ -260,6 +260,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     else{
         throw std::domain_error("index out of range");
     }
+    return _BST::insert(v);         // prevent warning control reaches end of non-void function
 }
 
 template<typename T>
@@ -301,6 +302,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
         }
         else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
     }
+    return _BST::find(v);         // prevent warning control reaches end of non-void function
 }
 
 
