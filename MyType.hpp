@@ -17,9 +17,9 @@ public:
     MyType() noexcept = default;
     MyType(std::string value) noexcept : _val(std::move(value)) {};
 
-    constexpr bool operator< (const MyType& i) const noexcept
+    bool operator< (const MyType& i) const noexcept
     {return findSum(_val) < findSum(i._val);}
-    constexpr bool operator== (const MyType& i) const noexcept
+    bool operator== (const MyType& i) const noexcept
     {return findSum(_val) == findSum(i._val);}
     int findSum(const std::string &str) const;
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);
