@@ -68,7 +68,7 @@ int main() {
 
         Cont<int> cont2(*cont) ;           // constructeur de copie -> conversion implicite from Cont to Vect
         std::cout << "find (3) (3) : " << cont2.find(3) << std::endl;
-        std::cout << "_used (5) " << cont2.getUsed() << std::endl;
+        std::cout << "_used (2) " << cont2.getUsed() << std::endl;
 
         //Cont<int> cont4(*vect);             // copie dans vect puis constructeur de conversion dans Cont
 
@@ -98,10 +98,6 @@ int main() {
         std::cout << "_used (2) : " << cont4->getUsed() << std::endl;
 
         // Cont<int> *cont3 = new Cont<int>(*cont2);
-
-
-
-
 //
 //        BST<Cont_base<int>::Info> arb ;
 //

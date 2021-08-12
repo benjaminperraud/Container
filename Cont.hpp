@@ -153,14 +153,13 @@ public:
 
     explicit constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
 
-//    explicit constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.getUsed()){
-//        std::cout << "copie ?" << std::endl;
-//        for (std::size_t i = 0; i < v.getUsed(); ++i){
-//            //std::cout << v.operator[](i) << std::endl;
-//            _BST::insert(v.operator[](i));
-//            Cont_base<T>::_used += 1; // -> normalement dans insert (bizarre)
-//        }
-//    }
+    explicit constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.getUsed()){
+        std::cout << "copie d'un cont" << std::endl;
+        for (std::size_t i = 0; i < v.getUsed(); ++i){
+            _BST::insert(v.operator[](i));
+        }
+        Cont_base<T>::_used = v.getUsed();
+    }
 
     // pas compris : différence entre copie d'un vect de type Cont ou pas ???
     // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
@@ -176,7 +175,8 @@ public:
             }
         }
         else{
-            throw std::domain_error("wrong effectif type");
+            //throw std::domain_error("wrong effectif type");
+            std::cout << "wrong effectif type" << std::endl;
         }
     }
 
@@ -187,9 +187,9 @@ public:
             Cont_base<T>::_used = cont->getUsed();
         }
         else{
-            throw std::domain_error("wrong effectif type");
+            //throw std::domain_error("wrong effectif type");
+            std::cout << "wrong effectif type" << std::endl;
         }
-
     }
 
 //    explicit constexpr Cont(const T &v) noexcept: _BST(), _Vect(){             // conversion avec l'initializer list dinguissime
@@ -231,7 +231,8 @@ public:
     // Copies & transfers
 //    inline Cont<T>& operator= (const Cont&);
 //    inline Cont<T>& operator= (Cont&&);
-    inline Cont<T>& operator=(const _BST &v);
+    inline Cont<T>& operator=(const _BST &v) ;
+    inline Cont<T>& operator=(const _Vect &v);
     // Output
     void _dsp (std::ostream&) const override {} ;
     // Destructor
@@ -309,7 +310,7 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
         std::cout << "bon type" << std::endl;
     }
     else{
-        throw std::bad_cast();
+        std::cout << "wrong effectif type" << std::endl;
     }
 
 //    if (this != &v){
@@ -317,6 +318,23 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
 //        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
 //        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
 //    }
+    return *this;
+}
+
+template<typename T>
+Cont<T>& Cont<T>::operator=(const _Vect &v) {     // implicit conversion to Cont ??
+    if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+        std::cout << "bon type" << std::endl;
+    }
+    else{
+        std::cout << "wrong effectif type" << std::endl;
+    }
+
+    //    if (this != &v){
+    //        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+    //        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
+    //        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
+    //    }
     return *this;
 }
 
