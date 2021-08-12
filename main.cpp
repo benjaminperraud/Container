@@ -11,55 +11,67 @@ int main() {
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
         vect->operator[](2) = 5;
-        std::cout << "v[2] : " << vect->at(2) << std::endl;
-        std::cout << "v[2] : " << vect->operator[](2) << std::endl;
-        std::cout << "dim v : " << vect->dim() << std::endl;
+        std::cout << "v[2] (5) : " << vect->at(2) << ", " << vect->operator[](2) << std::endl;
+        std::cout << "dim v (30) : " << vect->dim() << std::endl;
         *vect = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});
-        std::cout << "v[2] : " << vect->at(2) << std::endl;
-        std::cout << "v[2] : " << vect->operator[](2) << std::endl;
-        std::cout << "dim v : " << vect->dim() << std::endl;
+        std::cout << "v[3] (4) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
+        std::cout << "dim v (4) : " << vect->dim() << std::endl;
+
+        //rajouter qq trucs histoire de
 
         std::cout << "*** Utilisation d'un Cont de type effectif BST ***" << std::endl;
 
         Cont_base<int>::Info info(12,15);
         BST<Cont_base<int>::Info> *bst = new Cont<int>(20);
         bst->insert(info);
-        std::cout << "find(info) : " << bst->find(info) << std::endl;
+        std::cout << "find(info) (15) : " << bst->find(info) << std::endl;
         bst->insert(Cont_base<int>::Info(12,17));
-        std::cout << "find(15) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
-        std::cout << "find(17) : " << bst->find(17) << std::endl;
+        std::cout << "find(15) (0) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
+        std::cout << "erase(15) false : " << bst->erase(15) << std::endl;             // cant erase it
 
+        std::cout << "find((12,17)) (17) : " << bst->find({12,17}) << std::endl;
 
-        //std::cout << "find((10,15)) : " << bst->find((10,15)) << std::endl;             // -> fonctionne pas
-        std::cout << "erase(17) : " << bst->erase(Cont_base<int>::Info(12,17)) << std::endl;
-        std::cout << "erase(15) : " << bst->erase(15) << std::endl;
-        std::cout << "find(17) : " << bst->find(17) << std::endl;
+        std::cout << "find(17) (17) : " << bst->find(17) << std::endl;
+
+        try{
+            bst->insert({5, 17});
+        }
+        catch (const std::exception& e){
+            std::cout << "Caught exception \"" << e.what() << std::endl;
+        }
+        bst->erase(17);
+        try{
+            std::cout << "erase(17) : " << bst->erase(Cont_base<int>::Info(12,17)) << std::endl;
+        }
+        catch (const std::exception& e){
+            std::cout << "Caught exception \"" << e.what() << std::endl;
+        }
+
 
         std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
 
         Cont_base<int>::Info t(7,52);
-
         Cont<int> *cont = new Cont<int>(30) ;
-
-        //std::cout << "cont find (t) : " << cont.find(t) << std::endl;          // -> erreur si cont pas initialisé (Cont cont;), normal ?
-
         cont->insert(t);
         cont->insert(info);
-        std::cout << "find (t) : " << cont->find(t) << std::endl;
-        std::cout << "cont[7] : " << cont->at(7) << std::endl;          // Vect::at index out of range
-        std::cout << "cont[7] : " << cont->operator[](7) << std::endl;          // Vect::at index out of range
-        std::cout << "_used : " << cont->getUsed() << std::endl;
-        cont->insert(Cont_base<int>::Info(9,52));
-        std::cout << "cont[4]: " << cont->operator[](4) << std::endl;
-        std::cout << "cont[7]: " << cont->operator[](7) << std::endl;
+        std::cout << "find (t) (52) : " << cont->find(t) << std::endl;
+        std::cout << "cont[7] (52) : " << cont->at(7) << std::endl;
+        std::cout << "_used (2) : " << cont->getUsed() << std::endl;
 
         std::cout << "*****" << std::endl;
 
-        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;
+        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // pure magic
 
-        std::cout << "find (3) : " << cont2->find(3) << std::endl;
-        std::cout << "cont2[4]: " << cont2->operator[](4) << std::endl;
-        std::cout << "_used " << cont2->getUsed() << std::endl;
+        std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
+        std::cout << "cont2[4] (5) : " << cont2->operator[](4) << std::endl;
+        std::cout << "_used (5) " << cont2->getUsed() << std::endl;
+
+        // Conversions
+
+
+
+
+
 //
 //        BST<Cont_base<int>::Info> arb ;
 //

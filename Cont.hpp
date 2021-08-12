@@ -34,7 +34,7 @@ std::ostream& operator<< (std::ostream& out, const _Cont_base::_Base<U>& b)
 template <typename T>
 class Cont_base { // abstract
 public:
-    class Info;               // manière de rendre la classe Info locale  -> évite d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
+    class Info;               // make class Info local  -> évite d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
     class Ptr2Info;
 protected:
   static const Info _EMPTY;
@@ -123,9 +123,6 @@ public:
     {return _ptr->_data < i._ptr->_data;}
   constexpr bool operator== (const Ptr2Info& i) const noexcept
     {return _ptr->_data == i._ptr->_data;}
-
-  // Destructor
-  //~Ptr2Info () noexcept {delete _ptr;}
 }; // Ptr2Info
 
 namespace _Cont_base {
@@ -183,8 +180,6 @@ public:
     // Getters
     const _Info& find(const _Info &v) const noexcept override;
     inline std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
-
-
     // Copies & transfers
     //inline Cont<T>& operator= (const Cont&);
     //inline Cont<T>& operator= (Cont&&);
@@ -202,7 +197,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
         throw std::domain_error("no index specified");
     }
     if (std::size_t(idx) <= _Vect::dim()){
-        if(!_BST::exists(v)){
+        if(!_BST::exists(T(v))){                                // cast to T to find element without taking into account the index
             if (!_Vect::operator[](idx).isEmpty()) {            // check if index is occuped, if yes erase it from the BST
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
             }
@@ -210,7 +205,6 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
             Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
         }
         else{
-            std::cout << "fdp ? " << std::endl;
             throw std::domain_error("element already in Container");
         }
     }
@@ -232,6 +226,7 @@ bool Cont<T>::erase(const _Info &v) {
     }
     else {
         if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+            // if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
             _Vect::operator[](idx) = Ptr2Info() ;
             if(_BST::erase(v)){
                 Cont_base<T>::_used -= 1;
@@ -255,7 +250,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
         if(_Vect::operator[](idx) == v){
             _BST::find(v);
         }
-        else return _BST::_NOT_FOUND;       // no exception threw here because base virtual method is noexcept
+        else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
     }
 }
 
