@@ -33,7 +33,7 @@ public:
     // modificateurs
     inline T& operator[] (std::ptrdiff_t);
     // copies, transferts, etc.
-    Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) {}
+    Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) { std::cout << "copie dans vect " << std::endl;}
     constexpr Vect (Vect&& v) noexcept: _size(v._size), _val(v._val)
     {v._size = 0; v._val = nullptr;}
     inline Vect& operator= (const Vect&) noexcept;

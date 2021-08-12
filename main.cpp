@@ -13,8 +13,8 @@ int main() {
         vect->operator[](2) = 5;
         std::cout << "v[2] (5) : " << vect->at(2) << ", " << vect->operator[](2) << std::endl;
         std::cout << "dim v (30) : " << vect->dim() << std::endl;
-        *vect = Vect<Cont_base<int>::Ptr2Info>({1, 2, 3, 4});
-        std::cout << "v[3] (4) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
+        *vect = Vect<Cont_base<int>::Ptr2Info>({10, 11, 12, 13});
+        std::cout << "v[3] (13) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
         std::cout << "dim v (4) : " << vect->dim() << std::endl;
 
         //rajouter qq trucs histoire de
@@ -28,9 +28,7 @@ int main() {
         bst->insert(Cont_base<int>::Info(12,17));
         std::cout << "find(15) (0) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
         std::cout << "erase(15) false : " << bst->erase(15) << std::endl;             // cant erase it
-
         std::cout << "find((12,17)) (17) : " << bst->find({12,17}) << std::endl;
-
         std::cout << "find(17) (17) : " << bst->find(17) << std::endl;
 
         try{
@@ -59,17 +57,48 @@ int main() {
 
         std::cout << "*****" << std::endl;
 
-        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list
-
-        std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
-        std::cout << "cont2[4] (5) : " << cont2->operator[](4) << std::endl;
-        std::cout << "_used (5) " << cont2->getUsed() << std::endl;
+//        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list      -> copie dans vect puis constructeur de CONVERSION
+//        std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
+//        std::cout << "cont2[4] (5) : " << cont2->operator[](4) << std::endl;
+//        std::cout << "_used (5) " << cont2->getUsed() << std::endl;
 
         // Conversions
 
-        // Cont<int> *cont3 = new Cont(cont2);          // deduction guide donc pas de <T> à mettre avant Cont;
+        std::cout << "***** Copies/Transferts *****" << std::endl;
 
-        Cont<int>
+        Cont<int> cont2(*cont) ;           // constructeur de copie -> conversion implicite from Cont to Vect
+        std::cout << "find (3) (3) : " << cont2.find(3) << std::endl;
+        std::cout << "_used (5) " << cont2.getUsed() << std::endl;
+
+        //Cont<int> cont4(*vect);             // copie dans vect puis constructeur de conversion dans Cont
+
+        Cont<int> cont3(*vect);
+        std::cout << "find (13) (13) : " << cont3.find(13) << std::endl;
+        std::cout << "_used (4) " << cont3.getUsed() << std::endl;
+
+        //cont = &cont3 ;
+
+        BST<Cont_base<int>::Info> arb;
+        arb.insert(3);
+//        try{
+//            Cont<int> cont5(arb);        // wrong effectiv type
+//        }
+//        catch (const std::exception& e){
+//            std::cout << "Caught exception \"" << "bad_cast" << std::endl;
+//        }
+
+        BST<Cont_base<int>::Info> *tree = new Cont<int>(10);
+        tree->insert({1, 3});
+        tree->insert({7, 10});
+
+        Cont<int> *cont4 = new Cont(*tree);          // deduction guide donc pas de <T> à mettre avant Cont;
+
+
+        std::cout << "find (10) (10) : " << cont4->find(10) << std::endl;
+        std::cout << "_used (2) : " << cont4->getUsed() << std::endl;
+
+        // Cont<int> *cont3 = new Cont<int>(*cont2);
+
 
 
 

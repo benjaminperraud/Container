@@ -151,6 +151,60 @@ public:
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
 
+    explicit constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
+
+//    explicit constexpr Cont(const Cont<T> &v) noexcept: _BST(), _Vect(v.getUsed()){
+//        std::cout << "copie ?" << std::endl;
+//        for (std::size_t i = 0; i < v.getUsed(); ++i){
+//            //std::cout << v.operator[](i) << std::endl;
+//            _BST::insert(v.operator[](i));
+//            Cont_base<T>::_used += 1; // -> normalement dans insert (bizarre)
+//        }
+//    }
+
+    // pas compris : différence entre copie d'un vect de type Cont ou pas ???
+    // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
+    // un probleme de pointeur ? un Vect de type int doit ensuite être converti en Ptr2Info -> soucis ?
+
+    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
+        std::cout << "conversion depuis un Vect" << std::endl;
+        if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+            std::cout << "bon type" << std::endl;
+            for (std::size_t i = 0; i < v.dim(); ++i){                                  // il faut mettre à jour l'arbre en conséquence
+                if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));                                                  // dans le cas d'un vect pas complet ? ?
+                Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
+            }
+        }
+        else{
+            throw std::domain_error("wrong effectif type");
+        }
+    }
+
+    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){             // conversion avec l'initializer list dinguissime
+        std::cout << "conversion depuis un BST" << std::endl;
+        if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+            std::cout << "bon type" << std::endl;
+            Cont_base<T>::_used = cont->getUsed();
+        }
+        else{
+            throw std::domain_error("wrong effectif type");
+        }
+
+    }
+
+//    explicit constexpr Cont(const T &v) noexcept: _BST(), _Vect(){             // conversion avec l'initializer list dinguissime
+//        if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+//            std::cout << "bon type" << std::endl;
+//        }
+//        else{
+//            throw std::bad_cast();
+//        }
+//    }
+
+
+    explicit constexpr Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
+
+
 //    constexpr Cont (std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
 //        for(auto object : {init}) {
 //            std::cout << object << std::endl;
@@ -167,13 +221,7 @@ public:
 //        std::cout << "wesh" << Cont_base<T>::_used << std::endl;
 //    }
 
-    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
-        for (std::size_t i = 0; i < v.dim(); ++i){                                  // il faut mettre à jour l'arbre en conséquence
-            _BST::insert(v.at(i));                                                  // dans le cas d'un vect pas complet ? ?
-            Cont_base<T>::_used += 1; // -> normalement dans insert (bizarre)
-        }
-    }
-    explicit constexpr Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
+
     // Setters
     const _Info& insert(const _Info &v) override ;
     bool erase(const _Info &v) override;
@@ -181,8 +229,8 @@ public:
     const _Info& find(const _Info &v) const noexcept override;
     inline std::size_t getUsed () const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
-    //inline Cont<T>& operator= (const Cont&);
-    //inline Cont<T>& operator= (Cont&&);
+//    inline Cont<T>& operator= (const Cont&);
+//    inline Cont<T>& operator= (Cont&&);
     inline Cont<T>& operator=(const _BST &v);
     // Output
     void _dsp (std::ostream&) const override {} ;
@@ -264,11 +312,11 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
         throw std::bad_cast();
     }
 
-    if (this != &v){
-        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
-        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
-    }
+//    if (this != &v){
+//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+//        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
+//        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
+//    }
     return *this;
 }
 
@@ -281,7 +329,7 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
 //    }
 //    return *this;
 //}
-
+//
 //template<typename T>
 //Cont<T>& Cont<T>::operator=(Cont &&v) {
 //    if (this != &v){
@@ -297,7 +345,7 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
 // Deduction guides ==========================================================
 
 template <typename T>
-Cont (const Vect<T>&) -> Cont<typename T::value_type>;
+Cont (const Vect<T>&) -> Cont<typename T::value_type>;      // deduction guide donc pas de <T> à mettre avant Cont; (que pour BST et Vect)
 
 template <typename T>
 Cont (const BST<T>&) -> Cont<typename T::value_type>;
