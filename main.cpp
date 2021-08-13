@@ -100,21 +100,18 @@ int main() {
         bst->insert({4,23});
         bst->insert({6,11});
         bst->insert({9,2});
-        // deduction guide pas de <T> à mettre avant Cont;
         Cont<int> *fromBST = new Cont(*bst);        // pseudo conversion d'un BST vers un Cont
-        // std::cout << "find((12,17)) (17) : " << fromBST->find({12,17}) << std::endl;         // erreur
         std::cout << "find(23) (23) : " << fromBST->find(23) << std::endl;
-        std::cout << "_used (3) : " << fromBST->getUsed() << std::endl;
+        //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;
+        std::cout << "_used (4) : " << fromBST->getUsed() << std::endl;
 
 
+        *container = *bst;                          // pseudo conversion d'un BST vers un Cont
+        std::cout << "find(23) (23) : " << container->find({4,23}) << std::endl;
+        //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;
+        std::cout << "_used (4) : " << container->getUsed() << std::endl;
 
-        // deduction guide pas de <T> à mettre avant Cont;
-        *container = *bst;        // pseudo conversion d'un BST vers un Cont
-        // std::cout << "find((12,17)) (17) : " << fromBST->find({12,17}) << std::endl;         // erreur
-        std::cout << "find(23) (23) : " << container->find(23) << std::endl;
-        std::cout << "_used (2) : " << container->getUsed() << std::endl;
-
-
+        // manque test assignement d'un vect
 
         std::cout << "*********" << std::endl;
         delete vect;

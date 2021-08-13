@@ -282,7 +282,7 @@ Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()
 
 template<typename T>
 Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
-    std::cout << "conversion depuis un Vect" << std::endl;
+    std::cout << "conversion depuis un Vect (constructeur)" << std::endl;
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
         for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
@@ -295,9 +295,10 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion ave
 }
 
 template<typename T>
-Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){             // conversion avec l'initializer list dinguissime
-    std::cout << "conversion depuis un BST" << std::endl;
+Cont<T>::Cont(const _BST &v) : _BST(), _Vect(){
+    std::cout << "conversion depuis un BST (constructeur)" << std::endl;
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+        // trouver un moyen de recreer le sous-objet vect
         std::cout << "bon type" << std::endl;
         Cont_base<T>::_used = cont->getUsed();
     }
@@ -308,35 +309,40 @@ Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){             // conversion avec 
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont ??
+    std::cout << "conversion depuis un BST (assignement)" << std::endl;
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
+        if (this != &v){
+            Cont_base<T>::operator=(*res);                 // explicit call to copy assignement operator of Cont_Base for _used
+            _BST::operator=(*res) ;                        // explicit call to copy assignement for _BST subobject
+            //_Vect::operator=(*res) ;                       // explicit call to copy assignement for _Vect subobject
+
+            // parcourt de l'arbe -> Vect doit pointer au bon endroit
+
+        }
     }
     else{
-        std::cout << "wrong effectif type" << std::endl;
+        throw std::domain_error("wrong effectif type");
     }
-
-//    if (this != &v){
-//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-//        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
-//        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
-//    }
     return *this;
 }
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _Vect &v) {     // implicit conversion to Cont ??
+    std::cout << "conversion depuis un Vect (assignement)" << std::endl;
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
+        if (this != &v){
+            Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+            _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
+            for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+                if ( !v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
+            }
+        }
     }
     else{
-        std::cout << "wrong effectif type" << std::endl;
+        throw std::domain_error("wrong effectif type");
     }
-
-    //    if (this != &v){
-    //        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-    //        _BST::operator=(v) ;                        // explicit call to copy assignement for _BST subobject
-    //        _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
-    //    }
     return *this;
 }
 
