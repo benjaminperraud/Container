@@ -9,7 +9,7 @@ class MyType{
 private:
     std::string _val;
 protected:
-    virtual void _dsp (std::ostream& out) const {out << _val ;} ;
+    void _dsp (std::ostream& out) const {out << _val ;} ;
 public:
     // Constructors
     MyType() noexcept = default;

@@ -150,25 +150,13 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-    Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
-    Cont(const Cont<T> &v) noexcept;
-    explicit Cont(const _Vect &v) ;
-    explicit Cont(const _BST &v) ;
-    explicit Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
+    Cont(const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
+    Cont(std::size_t t, const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
+
 
     // pas compris : différence entre copie d'un vect de type Cont ou pas ???
     // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
     // un probleme de pointeur ? un Vect de type int doit ensuite être converti en Ptr2Info -> soucis ?
-
-
-//    explicit constexpr Cont(const T &v) noexcept: _BST(), _Vect(){             // conversion avec l'initializer list dinguissime
-//        if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
-//            std::cout << "bon type" << std::endl;
-//        }
-//        else{
-//            throw std::bad_cast();
-//        }
-//    }
 
 //    constexpr Cont (std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
 //        for(auto object : {init}) {
@@ -186,6 +174,9 @@ public:
     // Copies & transfers
 //    inline Cont<T>& operator= (const Cont&);
 //    inline Cont<T>& operator= (Cont&&);
+    Cont(const Cont<T> &v) noexcept;
+    explicit Cont(const _Vect &v) ;
+    explicit Cont(const _BST &v) ;
     inline Cont<T>& operator=(const _BST &v) override;
     inline Cont<T>& operator=(const _Vect &v);
     // Output
@@ -194,7 +185,90 @@ public:
     ~Cont () noexcept = default;
 };
 
-// Constructors
+// Constructors ============================================================
+
+template<typename T>
+Cont<T>::Cont(const std::initializer_list<T> &init) noexcept : _BST(), _Vect(init){
+
+}
+
+template<typename T>
+Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
+
+}
+
+
+// Setters =================================================================
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+    if (idx == -1){                 // implicit conversion to Info with default index -1
+        throw std::domain_error("no index specified");
+    }
+    if (std::size_t(idx) <= _Vect::dim()){
+        if(!_BST::exists(T(v))){                                // cast to T to find element without taking into account the index
+            std::cout << "value not in BST" << std::endl;
+            if (!_Vect::operator[](idx).isEmpty()) {            // check if index is occupied, if yes erase it from the BST
+                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
+            }
+            Cont_base<T>::_used += 1;
+            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
+        }
+        else{
+            throw std::domain_error("element already in Container");
+        }
+    }
+    else{
+        throw std::domain_error("index out of range");
+    }
+}
+
+template<typename T>
+bool Cont<T>::erase(const _Info &v) {
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+    if (idx == -1){         // either no index specified but v in BST, or v not in BST
+        if(_BST::exists(v)) Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
+        if(_BST::erase(v)){
+            Cont_base<T>::_used -= 1;
+            return true;
+        }
+        else return false;
+    }
+    else {
+        if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+            // if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
+            _Vect::operator[](idx) = Ptr2Info() ;
+            if(_BST::erase(v)){
+                Cont_base<T>::_used -= 1;
+                return true;
+            }
+            else return false;
+        }
+        else{
+            throw std::domain_error("element not found at this position");
+        }
+    }
+}
+
+// Getters ===================================================================
+
+template<typename T>
+const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
+    std::ptrdiff_t idx = Cont_base<T>::_index(v);
+    if (idx == -1){
+        _BST::find(v);
+    }
+    else{
+        if(_Vect::operator[](idx) == v){
+            _BST::find(v);
+        }
+        else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
+    }
+}
+
+
+// Copies & transfers ========================================================
 
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
@@ -231,74 +305,6 @@ Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){             // conversion avec 
         throw std::domain_error("wrong effectif type");
     }
 }
-
-
-template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
-    std::ptrdiff_t idx = Cont_base<T>::_index(v);
-    if (idx == -1){                 // implicit conversion to Info with default index -1
-        throw std::domain_error("no index specified");
-    }
-    if (std::size_t(idx) <= _Vect::dim()){
-        if(!_BST::exists(T(v))){                                // cast to T to find element without taking into account the index
-            if (!_Vect::operator[](idx).isEmpty()) {            // check if index is occuped, if yes erase it from the BST
-                _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
-            }
-            Cont_base<T>::_used += 1;
-            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
-        }
-        else{
-            throw std::domain_error("element already in Container");
-        }
-    }
-    else{
-        throw std::domain_error("index out of range");
-    }
-    return _BST::insert(v);         // prevent warning control reaches end of non-void function
-}
-
-template<typename T>
-bool Cont<T>::erase(const _Info &v) {
-    std::ptrdiff_t idx = Cont_base<T>::_index(v);
-    if (idx == -1){         // either no index specified but v in BST, or v not in BST
-        if(_BST::exists(v)) Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
-        if(_BST::erase(v)){
-            Cont_base<T>::_used -= 1;
-            return true;
-        }
-        else return false;
-    }
-    else {
-        if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
-            // if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
-            _Vect::operator[](idx) = Ptr2Info() ;
-            if(_BST::erase(v)){
-                Cont_base<T>::_used -= 1;
-                return true;
-            }
-            else return false;
-        }
-        else{
-            throw std::domain_error("element not found at this position");
-        }
-    }
-}
-
-template<typename T>
-const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
-    std::ptrdiff_t idx = Cont_base<T>::_index(v);
-    if (idx == -1){
-        _BST::find(v);
-    }
-    else{
-        if(_Vect::operator[](idx) == v){
-            _BST::find(v);
-        }
-        else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
-    }
-    return _BST::find(v);         // prevent warning control reaches end of non-void function
-}
-
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont ??
