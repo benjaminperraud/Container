@@ -21,26 +21,26 @@ class Vect {
 protected:
     virtual void _dsp (std::ostream& out) const {out << *_val ;} ;
 public:
-    // constructeurs
+    // Constructors
     constexpr Vect () noexcept = default;   // Tableau vide
     explicit Vect (std::size_t d) noexcept: _size(d), _val(new T[d]) {}
     Vect (const std::initializer_list<T>&) noexcept;
     Vect (std::size_t, const std::initializer_list<T>&) noexcept;
-    // observateurs
+    // Getters
     constexpr std::size_t dim () const noexcept {return _size;}
     inline const T& operator[] (std::ptrdiff_t) const;
     inline const T& at(std::ptrdiff_t) const;
-    // modificateurs
+    // Setters
     inline T& operator[] (std::ptrdiff_t);
-    // copies, transferts, etc.
+    // Copies & transfers
     Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) { std::cout << "constructeur de copie dans vect.hpp " << std::endl;}
     constexpr Vect (Vect&& v) noexcept: _size(v._size), _val(v._val)
     {v._size = 0; v._val = nullptr;}
     inline Vect& operator= (const Vect&) noexcept;
     inline Vect& operator= (Vect&&) noexcept;
-    // destructeur
+    // Destructor
     virtual ~Vect () noexcept {delete[] _val;}
-    // fonctions externes
+    // Associated function
     template <typename U>
     friend inline std::ostream& operator<< (std::ostream&, const Vect<U>&);
 }; // Vect<T>
@@ -120,13 +120,6 @@ inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v)
 
 // fonctions externes =======================================================
 
-//template <typename T>
-//inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v){
-//    out << "[ ";
-//    for (std::size_t i = 0; i < v._size; ++i) out << v._val[i] << ' ';
-//    out << ']';
-//    return out;
-//}
 
 #endif // _VECT_H_
 

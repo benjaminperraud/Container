@@ -27,14 +27,14 @@ namespace _Cont_base {
 
 template <typename U>
 std::ostream& operator<< (std::ostream& out, const _Cont_base::_Base<U>& b)
-  {b._dsp(out); return out;}
+    {b._dsp(out); return out;}
 
 // Abstract base class =======================================================
 
 template <typename T>
 class Cont_base { // abstract
 public:
-    class Info;               // make class Info local  -> évite d’entrer en collision potentielle avec des déclarations et définitions d’un programme qui l’utiliserait
+    class Info;               // make class Info local
     class Ptr2Info;
 protected:
   static const Info _EMPTY;
@@ -67,7 +67,7 @@ const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY att
 // Embedded class Info =======================================================
 
 template <typename T>
-class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base ?
+class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base
   friend class Cont_base<T>;   // for _index static methods
   std::ptrdiff_t _index = -1;
   const T _data{};
@@ -112,7 +112,7 @@ public:
   using const_reference = const T&;
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
-  constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};            // implicit conversion from T to Ptr2Info
+  constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};       // implicit conversion from T to Ptr2Info
   constexpr operator const Info& () const noexcept       // implicit cast
     {return _ptr ? *_ptr : _EMPTY;}
     constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const Info
@@ -180,9 +180,12 @@ public:
     inline Cont<T>& operator=(const _BST &v) override;
     inline Cont<T>& operator=(const _Vect &v);
     // Output
-    void _dsp (std::ostream&) const override {} ;
+    void _dsp (std::ostream &out) const override {_BST::_dsp(out);}
     // Destructor
     ~Cont () noexcept = default;
+    // Associated function
+    template <typename U>
+    friend inline std::ostream& operator<< (std::ostream&, const Cont<U>&);
 };
 
 // Constructors ============================================================
@@ -267,14 +270,13 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
     }
 }
 
-
 // Copies & transfers ========================================================
 
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
     for (std::size_t i = 0; i < v.dim(); ++i){      // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
         if ( !v.at(i).isEmpty()) {
-            Cont::insert(*Cont_base<T>::_ptr(v.at(i)));
+            Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
         }
     }
     Cont_base<T>::_used = v.getUsed();
@@ -345,6 +347,13 @@ Cont<T>& Cont<T>::operator=(const _Vect &v) {     // implicit conversion to Cont
     }
     return *this;
 }
+
+// Associated function =======================================================
+
+template<typename U>
+inline std::ostream &operator<<(std::ostream &out, const Cont<U> &c){
+    out << "[ "; c._dsp(out); out << ']'; return out;}
+
 
 //template<typename T>
 //Cont<T>& Cont<T>::operator=(const Cont &v) {     // manque des delete ?
