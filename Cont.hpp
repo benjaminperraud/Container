@@ -166,21 +166,23 @@ public:
 //    }
 
     // Setters
-    const _Info& insert(const _Info &v) override ;
+    const _Info& insert(const _Info &v) override;
     bool erase(const _Info &v) override;
     // Getters
     const _Info& find(const _Info &v) const noexcept override;
     constexpr std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
-//    inline Cont<T>& operator= (const Cont&);
-//    inline Cont<T>& operator= (Cont&&);
     Cont(const Cont<T> &v) noexcept;
     explicit Cont(const _Vect &v) ;
     explicit Cont(const _BST &v) ;
+    inline Cont<T>& operator= (const Cont&) noexcept;
+    inline Cont<T>& operator= (Cont&&) noexcept;
     inline Cont<T>& operator=(const _BST &v) override;
     inline Cont<T>& operator=(const _Vect &v);
     // Output
     void _dsp (std::ostream &out) const override {_BST::_dsp(out);}
+    // note : ne fonctionne pas pour un type déclaré Vect, problème : celui ci n'a pas de BST rempli et donc ne peut pas utiliser l'opérateur d'output de celui-ci
+    // détecter le type déclaré (est-ce possible?) reviendrait à briser le principe de Substitution de Liskov
     // Destructor
     ~Cont () noexcept = default;
     // Associated function
@@ -355,26 +357,26 @@ inline std::ostream &operator<<(std::ostream &out, const Cont<U> &c){
     out << "[ "; c._dsp(out); out << ']'; return out;}
 
 
-//template<typename T>
-//Cont<T>& Cont<T>::operator=(const Cont &v) {     // manque des delete ?
-//    if (this != &v){
-//        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-//        _BST::operator=(v) ;
-//        _Vect::operator=(v) ;
-//    }
-//    return *this;
-//}
-//
-//template<typename T>
-//Cont<T>& Cont<T>::operator=(Cont &&v) {
-//    if (this != &v){
-//        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
-//        _BST::operator=(v) ;
-//        _Vect::operator=(v) ;
-//    }
-//    v.Cont_base<T>::_used = 0;
-//    return *this;
-//}
+template<typename T>
+Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {     // manque des delete ?
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+        _BST::operator=(v) ;
+        _Vect::operator=(v) ;
+    }
+    return *this;
+}
+
+template<typename T>
+Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
+        _BST::operator=(v) ;
+        _Vect::operator=(v) ;
+    }
+    v.Cont_base<T>::_used = 0;
+    return *this;
+}
 
 
 // Deduction guides ==========================================================
