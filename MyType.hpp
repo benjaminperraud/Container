@@ -21,6 +21,10 @@ public:
     {return findSum(_val) == findSum(i._val);}
     int findSum(const std::string &str) const;
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);
+
+
+//    inline MyType& operator= (const MyType&) noexcept;
+//    inline MyType& operator= (MyType&&) noexcept;
 };
 
 int MyType::findSum(const std::string &str) const {
@@ -42,6 +46,20 @@ template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const MyType& t)
 {out << " ' "; t._dsp(out); out << " ' "; return out;}
 
+//MyType &MyType::operator=(const MyType &m) noexcept {
+//    if (this != &m) {
+//        _val = m._val;
+//    }
+//    return *this;
+//}
+//
+//MyType &MyType::operator=(MyType &&m) noexcept {
+//    if (this != &m) {
+//        _val = m._val;
+//        m._val = " ";
+//    }
+//    return *this;
+//}
 
 
 #ifndef CONTAINERS_MYTYPE_HPP

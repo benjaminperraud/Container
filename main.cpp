@@ -9,6 +9,11 @@ int main() {
     {                                         // Test de Cont
         std::cout << "***" << std::endl;
 
+//        Vect<Cont_base<MyType>::Ptr2Info> *VECT = new Cont<MyType>(30);   // one parameter constructor
+//
+//        VECT->operator[](2) = MyType("bonjour");
+//        std::cout << "v[2] (5) : " << VECT->at(2) << ", " << VECT->operator[](2) << std::endl;
+
         std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor

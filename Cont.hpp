@@ -112,10 +112,10 @@ public:
   using const_reference = const T&;
   // Constructors & casts
   constexpr Ptr2Info () noexcept = default;
-  constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};       // implicit conversion from T to Ptr2Info
+  constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};       // implicit cast from T to Ptr2Info
   constexpr operator const Info& () const noexcept       // implicit cast
     {return _ptr ? *_ptr : _EMPTY;}
-    constexpr operator const T& () const noexcept        // implicit cast         -> conversion from const T& to const Info
+    constexpr operator const T& () const noexcept        // implicit cast -> from const T& to const Info
     {return _ptr ? *_ptr : _EMPTY;}
   // Getter
   constexpr bool isEmpty () const noexcept {return !_ptr;}
