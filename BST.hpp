@@ -38,7 +38,7 @@ public:
   inline void traverse (Fct, Args...) const;
   // Setters
   virtual const T& insert (const T& v)            // always add
-    {return (_nextLeaf(v) = new _Node(v))->info;}
+  {return (_nextLeaf(v) = new _Node(v))->info;}
   virtual bool erase (const T& v)                 // false if doesn't exist
     {_Node *res = _erase(_findNode(v)); delete res; return res;}
   // Copies & transfers

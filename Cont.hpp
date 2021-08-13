@@ -208,12 +208,12 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
     }
     if (std::size_t(idx) <= _Vect::dim()){
         if(!_BST::exists(T(v))){                                // cast to T to find element without taking into account the index
-            std::cout << "value not in BST" << std::endl;
             if (!_Vect::operator[](idx).isEmpty()) {            // check if index is occupied, if yes erase it from the BST
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
             }
             Cont_base<T>::_used += 1;
             Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
+
         }
         else{
             throw std::domain_error("element already in Container");
@@ -272,9 +272,10 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
 
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
-    std::cout << "copie d'un cont" << std::endl;
-    for (std::size_t i = 0; i < v.dim(); ++i){
-        if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));             // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+    for (std::size_t i = 0; i < v.dim(); ++i){      // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+        if ( !v.at(i).isEmpty()) {
+            Cont::insert(*Cont_base<T>::_ptr(v.at(i)));
+        }
     }
     Cont_base<T>::_used = v.getUsed();
 }
@@ -285,7 +286,7 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion ave
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
         for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
-            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
+            if ( !v.at(i).isEmpty()) Cont::insert(*Cont_base<T>::_ptr(v.at(i)));
             Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
         }
     }
