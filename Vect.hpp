@@ -45,7 +45,7 @@ public:
     friend inline std::ostream& operator<< (std::ostream&, const Vect<U>&);
 }; // Vect<T>
 
-// constructeurs ============================================================
+// Constructors ============================================================
 
 template <typename T>
 Vect<T>::Vect (const std::initializer_list<T>& init) noexcept:
@@ -64,7 +64,7 @@ Vect<T>::Vect (std::size_t d, const std::initializer_list<T>& init) noexcept:
         const_cast<std::remove_const_t<T>*>(_val)[i] = *p++;
 }
 
-// observateurs =============================================================
+// Getters ===================================================================
 
 template <typename T>
 const T& Vect<T>::operator[] (std::ptrdiff_t idx) const {
@@ -78,7 +78,7 @@ const T &Vect<T>::at(std::ptrdiff_t idx) const {
     return _val[idx];
 }
 
-// modificateurs ============================================================
+// Setters ===================================================================
 
 template <typename T>
 T& Vect<T>::operator[] (std::ptrdiff_t idx) {
@@ -87,7 +87,7 @@ T& Vect<T>::operator[] (std::ptrdiff_t idx) {
     return _val[idx];
 }
 
-// copies, transferts, etc. =================================================
+// Copies & transfers ========================================================
 
 template <typename T>
 T* Vect<T>::_cp (const Vect<T>& v) {
@@ -116,9 +116,6 @@ Vect<T>& Vect<T>::operator= (Vect&& v) noexcept {
 template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const Vect<T>& v)
 {out << "[ "; v._dsp(out); out << ']'; return out;}
-
-
-// fonctions externes =======================================================
 
 
 #endif // _VECT_H_

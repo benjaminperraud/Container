@@ -153,7 +153,6 @@ public:
     Cont(const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
     Cont(std::size_t t, const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
 
-
     // pas compris : différence entre copie d'un vect de type Cont ou pas ???
     // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
     // un probleme de pointeur ? un Vect de type int doit ensuite être converti en Ptr2Info -> soucis ?
@@ -206,7 +205,7 @@ Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BS
 // Setters =================================================================
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
+const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {      // [-Wreturn-type] warning because no explicit return, prevents using insert two times
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){                 // implicit conversion to Info with default index -1
         throw std::domain_error("no index specified");
@@ -217,8 +216,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {
                 _BST::erase(_Vect::operator[](idx));            // delete old Node at same position to update
             }
             Cont_base<T>::_used += 1;
-            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);           // Vect[i] points to the correct Node of BST
-
+            Cont_base<T>::_ptr(_Vect::operator[](idx)) = &_BST::insert(v);    // Vect[i] points to correct Node of BST
         }
         else{
             throw std::domain_error("element already in Container");
@@ -259,14 +257,14 @@ bool Cont<T>::erase(const _Info &v) {
 // Getters ===================================================================
 
 template<typename T>
-const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{            // pourquoi typename nécessaire ici ? voir cours
+const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){
-        _BST::find(v);
+        return _BST::find(v);
     }
     else{
         if(_Vect::operator[](idx) == v){
-            _BST::find(v);
+            return _BST::find(v);
         }
         else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
     }
@@ -275,8 +273,8 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{    
 // Copies & transfers ========================================================
 
 template<typename T>
-Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
-    for (std::size_t i = 0; i < v.dim(); ++i){      // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){   // Cont_base<T> prevents warning
+    for (std::size_t i = 0; i < v.dim(); ++i){      // warning conversion to 'long T' from 'long unsigned T' is acceptable because i start at 0 (same for further into code)
         if ( !v.at(i).isEmpty()) {
             Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
         }
@@ -289,7 +287,7 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion ave
     std::cout << "conversion depuis un Vect (constructeur)" << std::endl;
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
-        for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+        for (std::size_t i = 0; i < v.dim(); ++i){
             if ( !v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
         }
     }
@@ -301,9 +299,8 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion ave
 template<typename T>
 Cont<T>::Cont(const _BST &v) : _BST(), _Vect(){
     std::cout << "conversion depuis un BST (constructeur)" << std::endl;
-    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){
         // trouver un moyen de recreer le sous-objet vect
-        std::cout << "bon type" << std::endl;
         Cont_base<T>::_used = cont->getUsed();
     }
     else{
@@ -312,10 +309,9 @@ Cont<T>::Cont(const _BST &v) : _BST(), _Vect(){
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont ??
+Cont<T>& Cont<T>::operator=(const _BST &v) {
     std::cout << "conversion depuis un BST (assignement)" << std::endl;
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
-        std::cout << "bon type" << std::endl;
         if (this != &v){
             Cont_base<T>::operator=(*res);                 // explicit call to copy assignement operator of Cont_Base for _used
             _BST::operator=(*res) ;                        // explicit call to copy assignement for _BST subobject
@@ -332,14 +328,13 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {     // implicit conversion to Cont 
 }
 
 template<typename T>
-Cont<T>& Cont<T>::operator=(const _Vect &v) {     // implicit conversion to Cont ??
+Cont<T>& Cont<T>::operator=(const _Vect &v) {
     std::cout << "conversion depuis un Vect (assignement)" << std::endl;
-    if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
-        std::cout << "bon type" << std::endl;
+    if (const Cont* res = dynamic_cast<const Cont*>(&v)){
         if (this != &v){
             Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
             _Vect::operator=(v) ;                       // explicit call to copy assignement for _Vect subobject
-            for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+            for (std::size_t i = 0; i < v.dim(); ++i){
                 if ( !v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
             }
         }
@@ -370,7 +365,7 @@ Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {     // manque des delete ?
 template<typename T>
 Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
     if (this != &v){
-        Cont_base<T>::operator=(v);                 // call to copy/transfert ? operator of Cont_Base for _used
+        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
         _BST::operator=(v) ;
         _Vect::operator=(v) ;
     }
@@ -382,7 +377,7 @@ Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
 // Deduction guides ==========================================================
 
 template <typename T>
-Cont (const Vect<T>&) -> Cont<typename T::value_type>;      // deduction guide donc pas de <T> à mettre avant Cont; (que pour BST et Vect)
+Cont (const Vect<T>&) -> Cont<typename T::value_type>;
 
 template <typename T>
 Cont (const BST<T>&) -> Cont<typename T::value_type>;

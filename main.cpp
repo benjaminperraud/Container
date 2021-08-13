@@ -122,6 +122,8 @@ int main() {
         delete vect;
         delete bst;
         delete container;
+        delete fromVect;
+        delete fromBST;
 
 
 //    std::cout << "***** Output *****" << std::endl;
