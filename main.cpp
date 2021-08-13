@@ -68,7 +68,8 @@ int main() {
 
         // Conversions
 
-        std::cout << "***** Conversions *****" << std::endl;
+
+        std::cout << "***** Copies/Transferts *****" << std::endl;
 
         Cont<int> cont2(*container) ;           // constructeur de copie de Cont
         std::cout << "find ({7,52}) (52) : " << cont2.find({7,52}) << std::endl;
@@ -77,9 +78,12 @@ int main() {
         std::cout << "cont2[7] (52) : " << cont2.at(7) << std::endl;
         std::cout << "_used (2) " << cont2.getUsed() << std::endl;
 
+
+        std::cout << "***** Conversions *****" << std::endl;
+
         // deduction guide pas de <T> à mettre avant Cont;
         Cont<int> *fromVect = new Cont(*vect);        // pseudo conversion d'un Vect vers un Cont
-        std::cout << "find({2,13}) (0) : " << fromVect->find({2,13}) << std::endl;         // erreur
+        std::cout << "find({2,13}) (0) : " << fromVect->find({2,13}) << std::endl;
         std::cout << "find (13) (13) : " << fromVect->find(13) << std::endl;
         std::cout << "_used (4) " << fromVect->getUsed() << std::endl;
 
@@ -103,15 +107,12 @@ int main() {
         std::cout << "_used (3) : " << fromBST->getUsed() << std::endl;
 
 
-        std::cout << "***** Copies/Transferts *****" << std::endl;
 
         // deduction guide pas de <T> à mettre avant Cont;
         *container = *bst;        // pseudo conversion d'un BST vers un Cont
         // std::cout << "find((12,17)) (17) : " << fromBST->find({12,17}) << std::endl;         // erreur
         std::cout << "find(23) (23) : " << container->find(23) << std::endl;
         std::cout << "_used (2) : " << container->getUsed() << std::endl;
-
-
 
 
 

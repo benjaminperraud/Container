@@ -286,8 +286,7 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion ave
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
         for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
-            if ( !v.at(i).isEmpty()) Cont::insert(*Cont_base<T>::_ptr(v.at(i)));
-            Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
+            if ( !v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
         }
     }
     else{
