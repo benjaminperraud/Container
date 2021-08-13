@@ -150,47 +150,16 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-
-    constexpr Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
-
-    constexpr Cont(const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
-        std::cout << "copie d'un cont" << std::endl;
-        for (std::size_t i = 0; i < v.dim(); ++i){
-            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));             // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
-        }
-        Cont_base<T>::_used = v.getUsed();
-    }
+    Cont(const std::initializer_list<T> &init) noexcept: _BST(), _Vect(init){}           // constructor with maximum size of Cont
+    Cont(const Cont<T> &v) noexcept;
+    explicit Cont(const _Vect &v) ;
+    explicit Cont(const _BST &v) ;
+    explicit Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
 
     // pas compris : différence entre copie d'un vect de type Cont ou pas ???
     // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
     // un probleme de pointeur ? un Vect de type int doit ensuite être converti en Ptr2Info -> soucis ?
 
-    explicit constexpr Cont(const _Vect &v) noexcept: _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
-        std::cout << "conversion depuis un Vect" << std::endl;
-        if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
-            std::cout << "bon type" << std::endl;
-            for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
-                if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
-                Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
-            }
-        }
-        else{
-            //throw std::domain_error("wrong effectif type");
-            std::cout << "wrong effectif type" << std::endl;
-        }
-    }
-
-    explicit constexpr Cont(const _BST &v) noexcept: _BST(v), _Vect(){             // conversion avec l'initializer list dinguissime
-        std::cout << "conversion depuis un BST" << std::endl;
-        if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
-            std::cout << "bon type" << std::endl;
-            Cont_base<T>::_used = cont->getUsed();
-        }
-        else{
-            //throw std::domain_error("wrong effectif type");
-            std::cout << "wrong effectif type" << std::endl;
-        }
-    }
 
 //    explicit constexpr Cont(const T &v) noexcept: _BST(), _Vect(){             // conversion avec l'initializer list dinguissime
 //        if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
@@ -201,10 +170,6 @@ public:
 //        }
 //    }
 
-
-    explicit constexpr Cont(const _BST &b, const _Vect &v) noexcept: _BST(b), _Vect(v){}
-
-
 //    constexpr Cont (std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
 //        for(auto object : {init}) {
 //            std::cout << object << std::endl;
@@ -212,22 +177,12 @@ public:
 //        }
 //    }
 
-//    constexpr Cont (std::initializer_list<typename Cont_base<T>::Ptr2Info> &init) noexcept: _BST(), _Vect(init){ // constructor with initial list
-//        std::cout << "frero?" << std::endl;
-//        for(auto object : {init}) {
-//            std::cout << object << std::endl;
-//            Cont_base<T>::_used += 1;
-//        }
-//        std::cout << "wesh" << Cont_base<T>::_used << std::endl;
-//    }
-
-
     // Setters
     const _Info& insert(const _Info &v) override ;
     bool erase(const _Info &v) override;
     // Getters
     const _Info& find(const _Info &v) const noexcept override;
-    inline std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
+    constexpr std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
 //    inline Cont<T>& operator= (const Cont&);
 //    inline Cont<T>& operator= (Cont&&);
@@ -238,6 +193,45 @@ public:
     // Destructor
     ~Cont () noexcept = default;
 };
+
+// Constructors
+
+template<typename T>
+Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){          // Cont_base<T> prevent warning
+    std::cout << "copie d'un cont" << std::endl;
+    for (std::size_t i = 0; i < v.dim(); ++i){
+        if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));             // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+    }
+    Cont_base<T>::_used = v.getUsed();
+}
+
+template<typename T>
+Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
+    std::cout << "conversion depuis un Vect" << std::endl;
+    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+        std::cout << "bon type" << std::endl;
+        for (std::size_t i = 0; i < v.dim(); ++i){                                  // warning conversion to 'long T' from 'long unsigned T' is ok because i start at 0
+            if ( !v.at(i).isEmpty()) _BST::insert(v.at(i));
+            Cont_base<T>::_used += 1;                                               // -> normalement dans insert (bizarre)
+        }
+    }
+    else{
+        throw std::domain_error("wrong effectif type");
+    }
+}
+
+template<typename T>
+Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){             // conversion avec l'initializer list dinguissime
+    std::cout << "conversion depuis un BST" << std::endl;
+    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+        std::cout << "bon type" << std::endl;
+        Cont_base<T>::_used = cont->getUsed();
+    }
+    else{
+        throw std::domain_error("wrong effectif type");
+    }
+}
+
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {

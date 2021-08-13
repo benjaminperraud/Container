@@ -1,11 +1,9 @@
-#include <utility>
-#include <string>
-
 /* GNU C++ version 10.2 - "g++ -std=c++17"
  * Benjamin Perraudin - 2021/08 - <MyType.hpp>
  * Exemple de conteneur (projet n°1)
- */
+*/
 
+#include <utility>
 
 class MyType{
 private:
@@ -25,13 +23,11 @@ public:
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);
 };
 
-int findSum(const std::string &str)
-{
+int MyType::findSum(const std::string &str) const {
     std::string temp;
     int sum = 0;
     for (char ch : str) {
-        if (isdigit(ch))
-            temp += ch;
+        if (isdigit(ch)) temp += ch;
         else {
             sum += atoi(temp.c_str());
             temp = "";
@@ -44,7 +40,8 @@ int findSum(const std::string &str)
 
 template <typename T>
 inline std::ostream& operator<< (std::ostream& out, const MyType& t)
-{out << "[ "; t._dsp(out); out << ']'; return out;}
+{out << " ' "; t._dsp(out); out << " ' "; return out;}
+
 
 
 #ifndef CONTAINERS_MYTYPE_HPP

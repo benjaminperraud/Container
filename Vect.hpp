@@ -33,13 +33,13 @@ public:
     // modificateurs
     inline T& operator[] (std::ptrdiff_t);
     // copies, transferts, etc.
-    Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) { std::cout << "copie dans vect.hpp " << std::endl;}
+    Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) { std::cout << "constructeur de copie dans vect.hpp " << std::endl;}
     constexpr Vect (Vect&& v) noexcept: _size(v._size), _val(v._val)
     {v._size = 0; v._val = nullptr;}
     inline Vect& operator= (const Vect&) noexcept;
     inline Vect& operator= (Vect&&) noexcept;
     // destructeur
-    ~Vect () noexcept {delete[] _val;}
+    virtual ~Vect () noexcept {delete[] _val;}
     // fonctions externes
     template <typename U>
     friend inline std::ostream& operator<< (std::ostream&, const Vect<U>&);

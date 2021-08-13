@@ -18,6 +18,13 @@ int main() {
         std::cout << "v[3] (13) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
         std::cout << "dim v (4) : " << vect->dim() << std::endl;
 
+        try{
+            vect->at(25);
+        }
+        catch (const std::exception& e){
+            std::cout << "Caught exception \"" << e.what() << std::endl;
+        }
+
         //rajouter qq trucs histoire de
 
         std::cout << "*** Utilisation d'un Cont de type effectif BST ***" << std::endl;
@@ -70,35 +77,40 @@ int main() {
         Cont<int> cont2(*cont) ;           // constructeur de copie de Cont
         std::cout << "find (52) (52) : " << cont2.find(52) << std::endl;
         std::cout << "find (15) (15) : " << cont2.find(15) << std::endl;
-
         std::cout << "_used (2) " << cont2.getUsed() << std::endl;
 
-        //Cont<int> cont4(*vect);             // copie dans vect puis constructeur de conversion dans Cont
+        // deduction guide pas de <T> à mettre avant Cont;
+        Cont<int> *fromVect = new Cont(*vect);        // pseudo conversion d'un Vect vers un Cont
+        std::cout << "find((2,13)) (0) : " << fromVect->find({2,13}) << std::endl;         // erreur
+        std::cout << "find (13) (13) : " << fromVect->find(13) << std::endl;
+        std::cout << "_used (4) " << fromVect->getUsed() << std::endl;
 
-        Cont<int> cont3(*vect);
-        std::cout << "find (13) (13) : " << cont3.find(13) << std::endl;
-        std::cout << "_used (4) " << cont3.getUsed() << std::endl;
-
-        //cont = &cont3 ;
 
         BST<Cont_base<int>::Info> arb;
         arb.insert(3);
-//        try{
-//            Cont<int> cont5(arb);        // wrong effectiv type
-//        }
-//        catch (const std::exception& e){
-//            std::cout << "Caught exception \"" << "bad_cast" << std::endl;
-//        }
+        try{
+            Cont<int> cont5(arb);        // wrong effectiv type
+        }
+        catch (const std::exception& e){
+            std::cout << "Caught exception \"" << e.what() << std::endl;
+        }
 
-        BST<Cont_base<int>::Info> *tree = new Cont<int>(10);
-        tree->insert({1, 3});
-        tree->insert({7, 10});
+        // deduction guide pas de <T> à mettre avant Cont;
+        Cont<int> *fromBST = new Cont(*bst);        // pseudo conversion d'un BST vers un Cont
+        // std::cout << "find((12,17)) (17) : " << fromBST->find({12,17}) << std::endl;         // erreur
+        std::cout << "find(17) (17) : " << fromBST->find(17) << std::endl;
+        std::cout << "_used (2) : " << fromBST->getUsed() << std::endl;
 
-        Cont<int> *cont4 = new Cont(*tree);          // deduction guide donc pas de <T> à mettre avant Cont;
 
 
-        std::cout << "find (10) (10) : " << cont4->find(10) << std::endl;
-        std::cout << "_used (2) : " << cont4->getUsed() << std::endl;
+
+
+
+
+        std::cout << "*********" << std::endl;
+        delete vect;
+        delete bst;
+        delete cont;
 
         // Cont<int> *cont3 = new Cont<int>(*cont2);
 //
