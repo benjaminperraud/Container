@@ -28,7 +28,7 @@ public:
     Vect (std::size_t, const std::initializer_list<T>&) noexcept;
     // Getters
     constexpr std::size_t dim () const noexcept {return _size;}
-    virtual const T& operator[] (std::ptrdiff_t) const;
+    const T& operator[] (std::ptrdiff_t) const;
     inline const T& at(std::ptrdiff_t) const;
     // Setters
     virtual T& operator[] (std::ptrdiff_t);

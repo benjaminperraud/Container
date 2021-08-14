@@ -167,11 +167,10 @@ public:
 //    }
 
     // Setters
-    //_Ptr2Info& operator[] (std::ptrdiff_t idx) override ;       // in Cont Vect setter is not accessible
+    _Ptr2Info& operator[] (std::ptrdiff_t idx) override ;       // in Cont Vect setter is not accessible
     const _Info& insert(const _Info &v) override;
     bool erase(const _Info &v) override;
     // Getters
-    //const _Ptr2Info& operator[] (std::ptrdiff_t idx) const override ;       // in Cont Vect setter is not accessible
     const _Info& find(const _Info &v) const noexcept override;
     constexpr std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
@@ -198,27 +197,29 @@ public:
 template<typename T>
 Cont<T>::Cont(const std::initializer_list<T> &init) noexcept : _BST(), _Vect(init.size()){
     auto p = init.begin();
-    for (std::size_t i = 0; i < init.size(); ++i)
-        Cont::insert({i, *p++});
+    std::ptrdiff_t idx;
+    for (idx = 0; idx < init.size(); ++idx)
+        Cont::insert({idx, *p++});
 }
 
 template<typename T>
 Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t){
     auto p = init.begin();
-    for (std::size_t i = 0; i < t; ++i)
-        Cont::insert({i, *p++});
+    std::ptrdiff_t idx;
+    for (idx = 0; idx < init.size(); ++idx)
+        Cont::insert({idx, *p++});
 }
 
 
 // Setters =================================================================
 
-//template<typename T>
-//typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) {
-//    if (_Vect::operator[](idx).isEmpty()){          // value are constant in Cont context, no change allowed for element
-//        return _Vect::operator[](idx);
-//    }
-//    else return _Vect::at(idx);
-//}
+template<typename T>
+typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) {
+    if (_Vect::operator[](idx).isEmpty()){          // value are constant in Cont context, no change allowed for element
+        return _Vect::operator[](idx);
+    }
+    else throw std::domain_error("can't assign new value in constant vect");
+}
 
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {      // [-Wreturn-type] warning because no explicit return, prevents using insert two times
@@ -239,7 +240,7 @@ const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {      // [-Wretu
         }
     }
     else{
-        throw std::domain_error("index out of range");
+        throw std::out_of_range("index out of range");
     }
 }
 
@@ -280,7 +281,6 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
     }
     else{
         if(_Vect::operator[](idx) == v){      // implicit cast to constructor Info for vect[idx] with correct index
-        //if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
             return _BST::find(v);
         }
         else return _BST::_NOT_FOUND;  // no exception threw here because base virtual method is noexcept
@@ -301,7 +301,6 @@ Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()
 
 template<typename T>
 Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v.dim()){
-    std::cout << "conversion depuis un Vect (constructeur)" << std::endl;
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){  // dynamic_cast doesn't have the ability to remove a const qualifier
         for (std::size_t i = 0; i < v.dim(); ++i){
             if ( !v.at(i).isEmpty()) Cont::insert({ i,*Cont_base<T>::_ptr(v.at(i))});
@@ -314,7 +313,6 @@ Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v.dim()){
 
 template<typename T>
 Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){
-    std::cout << "conversion depuis un BST (constructeur)" << std::endl;
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){
         Cont_base<T>::_used = cont->getUsed();
         // parcourt de l'arbre -> Vect doit pointer au bon endroit
@@ -326,7 +324,6 @@ Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _BST &v) {
-    std::cout << "conversion depuis un BST (assignement)" << std::endl;
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
         if (this != &v){
             Cont_base<T>::operator=(*res);                 // explicit call to copy assignement operator of Cont_Base for _used
@@ -342,7 +339,6 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _Vect &v) {
-    std::cout << "conversion depuis un Vect (assignement)" << std::endl;
     if (const Cont* res = dynamic_cast<const Cont*>(&v)){
         if (this != &v){
             Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
@@ -367,7 +363,6 @@ inline std::ostream &operator<<(std::ostream &out, const Cont<U> &c){
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {
-    std::cout << "first" << std::endl;
     if (this != &v){
         Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
         _BST::operator=(v) ;

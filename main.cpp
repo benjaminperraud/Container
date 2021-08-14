@@ -15,16 +15,21 @@ int main() {
 //
 //        std::cout << "v[2] (5) : " << VECTE->at(2) << ", " << VECTE->operator[](2) << std::endl;
 
-
         std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
         std::cout << " " << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
         vect->operator[](2) = 5;
-        std::cout << "v[2] (5) : " << vect->at(2) << ", " << vect->operator[](2) << std::endl;
+        try{
+            vect->operator[](2) = 10;
+        }
+        catch (const std::exception& e){
+            std::cout << "Caught exception <" << e.what() << "> " << std::endl;
+        }
+        std::cout << "v[2] (5) : " << vect->at(2)  << std::endl;
         std::cout << "dim v (30) : " << vect->dim() << std::endl;
         *vect = Vect<Cont_base<int>::Ptr2Info>({10, 11, 12, 13});
-        std::cout << "v[3] (13) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
+        std::cout << "v[3] (13) : " << vect->at(3) << std::endl;
         std::cout << "dim v (4) : " << vect->dim() << std::endl;
         try{
             vect->at(25);
@@ -60,12 +65,12 @@ int main() {
             std::cout << "Caught exception <" << e.what() << "> " << std::endl;
         }
         try{
-            std::cout << "erase({5,17}) : " << bst->erase(Cont_base<int>::Info(5,17)) << std::endl;
+            std::cout << "erase({5,17}) (true) : " << bst->erase(Cont_base<int>::Info(5,17)) << std::endl;
         }
         catch (const std::exception& e){
             std::cout << "Caught exception <" << e.what() << "> " << std::endl;
         }
-        std::cout << "erase({12,17}) : true " << bst->erase({12,17}) << std::endl;
+        std::cout << "erase({12,17}) (true) : " << bst->erase({12,17}) << std::endl;
 
         std::cout << " " << std::endl;
         std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
@@ -127,7 +132,6 @@ int main() {
         delete container;
         delete fromVect;
         delete fromBST;
-
 
         std::cout << "***" << std::endl;
     }
