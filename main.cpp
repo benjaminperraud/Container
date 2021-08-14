@@ -82,27 +82,18 @@ int main() {
         std::cout << "container[7] (0) : " << container->at(7) << std::endl;
         std::cout << "_used (1) : " << container->getUsed() << std::endl;
 
-
         Cont<int> *container2 = new Cont<int>({1,2,3,4,5,6,7}) ;
+        std::cout << "find (3) (3) : " << container2->find(3) << std::endl;
         std::cout << *container2 << std::endl;
-
-//        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list      -> copie dans vect puis constructeur de CONVERSION
-//        std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
-//        std::cout << "cont2[4] (5) : " << cont2->operator[](4) << std::endl;
-//        std::cout << "_used (5) " << cont2->getUsed() << std::endl;
-
-        // Conversions
 
         std::cout << " " << std::endl;
         std::cout << "***** Copies/Transferts *****" << std::endl;
         std::cout << " " << std::endl;
 
-        Cont<int> cont2(*container) ;           // constructeur de copie de Cont
-        std::cout << "find ({7,52}) (52) : " << cont2.find({7,52}) << std::endl;
-        std::cout << "find (52) (52) : " << cont2.find(52) << std::endl;
-        std::cout << "find (15) (15) : " << cont2.find(15) << std::endl;
-        std::cout << "cont2[7] (52) : " << cont2.at(7) << std::endl;
-        std::cout << "_used (1) " << cont2.getUsed() << std::endl;
+        Cont<int> cont2(*container2) ;
+        std::cout << cont2 << std::endl;
+        Cont<int> cont3 = std::move(*container2) ;
+        std::cout << cont3 << std::endl;
 
         std::cout << " " << std::endl;
         std::cout << "***** Conversions *****" << std::endl;
@@ -110,9 +101,7 @@ int main() {
 
         // deduction guide pas de <T> à mettre avant Cont;
         Cont<int> *fromVect = new Cont(*vect);        // pseudo conversion d'un Vect vers un Cont
-        std::cout << "find({2,13}) (0) : " << fromVect->find({2,13}) << std::endl;
-        std::cout << "find (13) (13) : " << fromVect->find(13) << std::endl;
-        std::cout << "_used (4) " << fromVect->getUsed() << std::endl;
+        std::cout << *fromVect << std::endl;
 
 
         BST<Cont_base<int>::Info> arb;
@@ -129,16 +118,8 @@ int main() {
         bst->insert({9,2});
         Cont<int> *fromBST = new Cont(*bst);        // pseudo conversion d'un BST vers un Cont
         std::cout << "find(23) (23) : " << fromBST->find(23) << std::endl;
-        //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;
+        //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;     // pas implementé
         std::cout << "_used (4) : " << fromBST->getUsed() << std::endl;
-
-
-        *container = *bst;                          // pseudo conversion d'un BST vers un Cont
-        std::cout << "find(23) (23) : " << container->find({4,23}) << std::endl;
-        //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;
-        std::cout << "_used (4) : " << container->getUsed() << std::endl;
-
-
 
         std::cout << "*********" << std::endl;
         delete vect;

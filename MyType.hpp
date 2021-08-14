@@ -14,7 +14,6 @@ public:
     // Constructors
     MyType() noexcept = default;
     MyType(std::string value) noexcept : _val(std::move(value)) {};
-
     bool operator< (const MyType& i) const noexcept
     {return findSum(_val) < findSum(i._val);}
     bool operator== (const MyType& i) const noexcept
@@ -22,11 +21,9 @@ public:
         return findSum(_val) == findSum(i._val);}
     int findSum(const std::string &str) const;
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);
-
     // Copies & transfers
     MyType (const MyType& v) noexcept: _val(v._val) {}
-    MyType (MyType&& v) noexcept:  _val(v._val) {v._val = " ";}
-
+    MyType (MyType&& v) noexcept:  _val(v._val) {v._val = "";}
     inline MyType& operator= (const MyType&) noexcept;
     inline MyType& operator= (MyType&&) noexcept;
 };
@@ -36,9 +33,7 @@ int MyType::findSum(const std::string &str) const {
     // To store the sum
     int sum = 0;
     // For every character
-    for (char i : str) {
-        sum += (int)i;
-    }
+    for (char i : str) sum += (int) i;
     return sum;
 }
 
@@ -58,7 +53,7 @@ MyType &MyType::operator=(const MyType &m) noexcept {
 MyType &MyType::operator=(MyType &&m) noexcept {
     if (this != &m) {
         _val = m._val;
-        m._val = " ";
+        m._val = "";
     }
     return *this;
 }
