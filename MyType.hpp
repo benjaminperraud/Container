@@ -18,7 +18,7 @@ public:
     bool operator< (const MyType& i) const noexcept
     {return findSum(_val) < findSum(i._val);}
     bool operator== (const MyType& i) const noexcept
-    { std::cout << findSum(_val) <<findSum(i._val)   << std::endl;
+    { std::cout << findSum(_val) <<findSum(i._val)  << std::endl;
         return findSum(_val) == findSum(i._val);}
     int findSum(const std::string &str) const;
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);

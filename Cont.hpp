@@ -251,7 +251,7 @@ bool Cont<T>::erase(const _Info &v) {
         else return false;
     }
     else {
-        if(_Vect::operator[](idx) == v ){                           // explicit cast to Ptr2Info with no index
+        if(_Vect::operator[](idx) == v ){               // implicit cast to constructor Info for vect[idx] with correct index
         //if(_Vect::operator[](idx) == Ptr2Info(v) ){
             _Vect::operator[](idx) = Ptr2Info() ;           // erase pointeur of Vect
             if(_BST::erase(v)){
@@ -275,7 +275,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
         return _BST::find(v);
     }
     else{
-        if(_Vect::operator[](idx) == v){      // if index are the same
+        if(_Vect::operator[](idx) == v){      // implicit cast to constructor Info for vect[idx] with correct index
         //if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
             return _BST::find(v);
         }
