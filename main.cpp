@@ -6,22 +6,24 @@
 int main() {
 
     std::cout << std::boolalpha << "<<<" << std::endl;
-    {                                         // Test de Cont
+    {
         std::cout << "***" << std::endl;
 
-//        Vect<Cont_base<MyType>::Ptr2Info> *VECT = new Cont<MyType>(30);   // one parameter constructor
+//        Vect<Cont_base<MyType>::Ptr2Info> *VECTE = new Cont<MyType>(20);   // one parameter constructor
+//        MyType mytype = MyType("43test");
+//        VECTE->operator[](2) = MyType("string");
 //
-//        VECT->operator[](2) = MyType("bonjour");
-//        std::cout << "v[2] (5) : " << VECT->at(2) << ", " << VECT->operator[](2) << std::endl;
+//        std::cout << "v[2] (5) : " << VECTE->at(2) << ", " << VECTE->operator[](2) << std::endl;
+
 
         std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
         vect->operator[](2) = 5;
-        std::cout << "v[2] (5) : " << vect->at(2) << ", " << vect->operator[](2) << std::endl;
+        //std::cout << "v[2] (5) : " << vect->at(2) << ", " << vect->operator[](2) << std::endl;
         std::cout << "dim v (30) : " << vect->dim() << std::endl;
         *vect = Vect<Cont_base<int>::Ptr2Info>({10, 11, 12, 13});
-        std::cout << "v[3] (13) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
+        //std::cout << "v[3] (13) : " << vect->at(3) << ", " << vect->operator[](3) << std::endl;
         std::cout << "dim v (4) : " << vect->dim() << std::endl;
         try{
             vect->at(25);
@@ -39,21 +41,24 @@ int main() {
         bst->insert(Cont_base<int>::Info(12,17));
         std::cout << "find(15) (0) : " << bst->find(15) << std::endl;           // index updated, no more 15 at 12
         std::cout << "erase(15) false : " << bst->erase(15) << std::endl;
-        std::cout << "find((12,17)) (17) : " << bst->find({12,17}) << std::endl;            // error également
+        std::cout << "find((12,17)) (17) : " << bst->find({12,17}) << std::endl;
+        std::cout << "find((89,17)) (0) : " << bst->find({89,17}) << std::endl;
         std::cout << "find(17) (17) : " << bst->find(17) << std::endl;
         try{
-            bst->insert({5, 17});
+            bst->insert({19, 17});
         }
         catch (const std::exception& e){
             std::cout << "Caught exception <" << e.what() << "> " << std::endl;
         }
-        bst->erase(17);
         try{
-            std::cout << "erase(17) : " << bst->erase(Cont_base<int>::Info(12,17)) << std::endl;
+            std::cout << "erase({5,17}) : " << bst->erase(Cont_base<int>::Info(5,17)) << std::endl;
         }
         catch (const std::exception& e){
             std::cout << "Caught exception <" << e.what() << "> " << std::endl;
         }
+        std::cout << "erase({12,17}) : true " << bst->erase({12,17}) << std::endl;
+
+        std::cout << *bst << std::endl;
 
         std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
 
@@ -64,6 +69,9 @@ int main() {
         std::cout << "find (t) (52) : " << container->find(t) << std::endl;
         std::cout << "container[7] (52) : " << container->at(7) << std::endl;
         std::cout << "_used (2) : " << container->getUsed() << std::endl;
+        std::cout << "erase (t) (true) : " << container->erase(t) << std::endl;
+        std::cout << "container[7] (0) : " << container->at(7) << std::endl;
+        std::cout << "_used (1) : " << container->getUsed() << std::endl;
 
 
 //        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list      -> copie dans vect puis constructeur de CONVERSION
@@ -81,7 +89,7 @@ int main() {
         std::cout << "find (52) (52) : " << cont2.find(52) << std::endl;
         std::cout << "find (15) (15) : " << cont2.find(15) << std::endl;
         std::cout << "cont2[7] (52) : " << cont2.at(7) << std::endl;
-        std::cout << "_used (2) " << cont2.getUsed() << std::endl;
+        std::cout << "_used (1) " << cont2.getUsed() << std::endl;
 
 
         std::cout << "***** Conversions *****" << std::endl;
@@ -122,6 +130,8 @@ int main() {
         delete vect;
         delete bst;
         delete container;
+        delete fromVect;
+        delete fromBST;
 
 
 //    std::cout << "***** Output *****" << std::endl;
