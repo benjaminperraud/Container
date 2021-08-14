@@ -42,9 +42,9 @@ int MyType::findSum(const std::string &str) const {
 
 // Associated functions =========================================================
 
-template <typename T>
+
 inline std::ostream& operator<< (std::ostream& out, const MyType& t)
-{out << " ' "; t._dsp(out); out << " ' "; return out;}
+{out << "'"; t._dsp(out); out << "'"; return out;}
 
 //MyType &MyType::operator=(const MyType &m) noexcept {
 //    if (this != &m) {

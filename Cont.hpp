@@ -239,7 +239,7 @@ bool Cont<T>::erase(const _Info &v) {
         else return false;
     }
     else {
-        if(_Vect::operator[](idx) == v){                           // moyen de faire mieux pour le cast
+        if(_Vect::operator[](idx) == Ptr2Info(v) ){                           // moyen de faire mieux pour le cast (avant juste v)
             // if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
             _Vect::operator[](idx) = Ptr2Info() ;
             if(_BST::erase(v)){
@@ -263,10 +263,10 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
         return _BST::find(v);
     }
     else{
-        if(_Vect::operator[](idx) == v){
+        if(_Vect::operator[](idx) == Ptr2Info(v)){
             return _BST::find(v);
         }
-        else return _BST::_NOT_FOUND;       // no exception threw because base virtual method is noexcept
+        else return _BST::_NOT_FOUND;  // no exception threw here because base virtual method is noexcept
     }
 }
 
@@ -274,7 +274,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
 
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){   // Cont_base<T> prevents warning
-    for (std::size_t i = 0; i < v.dim(); ++i){      // warning conversion to 'long T' from 'long unsigned T' is acceptable because i start at 0 (same for further into code)
+    for (std::size_t i = 0; i < v.dim(); ++i){    // warning conversion to std::ptrdiff_t='long int' from std::size_t='long unsigned int' is acceptable because i start at 0 (same for further into code)
         if ( !v.at(i).isEmpty()) {
             Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
         }
@@ -283,9 +283,9 @@ Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()
 }
 
 template<typename T>
-Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){             // conversion avec l'initializer list dinguissime
+Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v){
     std::cout << "conversion depuis un Vect (constructeur)" << std::endl;
-    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+    if (const Cont* cont = dynamic_cast<const Cont*>(&v)){  // dynamic_cast doesn't have the ability to remove a const qualifier
         std::cout << "bon type" << std::endl;
         for (std::size_t i = 0; i < v.dim(); ++i){
             if ( !v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});

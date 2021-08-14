@@ -6,13 +6,13 @@
 int main() {
 
     std::cout << std::boolalpha << "<<<" << std::endl;
-    {                                         // Test de Cont
+    {
         std::cout << "***" << std::endl;
 
-//        Vect<Cont_base<MyType>::Ptr2Info> *VECT = new Cont<MyType>(30);   // one parameter constructor
-//
-//        VECT->operator[](2) = MyType("bonjour");
-//        std::cout << "v[2] (5) : " << VECT->at(2) << ", " << VECT->operator[](2) << std::endl;
+        Vect<Cont_base<MyType>::Ptr2Info> *VECT = new Cont<MyType>(30);   // one parameter constructor
+        MyType mytype = MyType("test");
+        VECT->operator[](2) = MyType("string");
+        std::cout << "v[2] (5) : " << VECT->at(2) << ", " << VECT->operator[](2) << std::endl;
 
         std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
