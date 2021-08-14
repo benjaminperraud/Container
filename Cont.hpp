@@ -268,11 +268,6 @@ bool Cont<T>::erase(const _Info &v) {
 
 // Getters ===================================================================
 
-//template<typename T>
-//const typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
-//    return _Vect::at(idx);
-//}
-
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
