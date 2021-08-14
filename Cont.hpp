@@ -264,7 +264,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
     }
     else{
         if(!(_Vect::operator[](idx).isEmpty())){
-            if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){      // if index and value are the same
+            if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){    // if index and value are the same
                 return _BST::find(v);
             }
             else return _BST::_NOT_FOUND;
@@ -277,7 +277,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
 
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){   // Cont_base<T> prevents warning
-    for (std::size_t i = 0; i < v.dim(); ++i){    // warning conversion to std::ptrdiff_t='long int' from std::size_t='long unsigned int' is acceptable because i start at 0 (same for further into code)
+    for (std::ptrdiff_t i = 0; i < v.dim(); ++i){   // warning comparaison between std::ptrdiff_t='long int' from std::size_t='long unsigned int' is acceptable because i start at 0 (same for further into code)
         if (!v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});     // fill the BST
     }
     Cont_base<T>::_used = v.getUsed();
@@ -286,7 +286,7 @@ Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()
 template<typename T>
 Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v.dim()){
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){  // dynamic_cast doesn't have the ability to remove a const qualifier
-        for (std::size_t i = 0; i < v.dim(); ++i){
+        for (std::ptrdiff_t i = 0; i < v.dim(); ++i){
             if ( !v.at(i).isEmpty()) Cont::insert({ i,*Cont_base<T>::_ptr(v.at(i))});   // fill the BST
         }
     }
