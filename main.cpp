@@ -7,8 +7,6 @@ int main() {
 
     std::cout << std::boolalpha << "<<<" << std::endl;
     {
-        std::cout << "***" << std::endl;
-
         Cont<MyType> *contMyType = new Cont<MyType>(20);   // test with defined type
         MyType str = MyType("43test");
         contMyType->insert({1, str});
@@ -17,7 +15,7 @@ int main() {
         std::cout << "find(str) (43test) : " << contMyType->find(str) << std::endl;
         std::cout << *contMyType << std::endl;
 
-        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl << std::endl;
+        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
         vect->operator[](2) = 5;
@@ -60,7 +58,7 @@ int main() {
         std::cout << "erase({12,17}) (true) : " << bst->erase({12,17}) << std::endl;
 
 
-        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl << std::endl;
+        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
 
 
         Cont_base<int>::Info t(7,52);
@@ -87,7 +85,7 @@ int main() {
         Cont<int> cont3 = std::move(*container2) ;
         std::cout << cont3 << std::endl;
 
-        std::cout << std::endl <<"***** Conversions *****" << std::endl << std::endl;
+        std::cout << std::endl <<"***** Conversions *****" << std::endl;
 
         // deduction guide pas de <T> à mettre avant Cont;
         Cont<int> *fromVect = new Cont(*vect);        // pseudo conversion d'un Vect vers un Cont
@@ -105,8 +103,6 @@ int main() {
         std::cout << "find(23) (23) : " << fromBST->find(23) << std::endl;
         //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;     // pas implementé
         std::cout << "_used (4) : " << fromBST->getUsed() << std::endl;
-
-        std::cout << "*********" << std::endl;
 
         delete vect;
         delete bst;
