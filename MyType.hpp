@@ -24,8 +24,7 @@ public:
 
 int MyType::findSum(const std::string &str) const {
     int sum = 0;
-    // For every character
-    for (char i : str) sum += (int) i;
+    for (char i : str) sum += static_cast<int>(i);      // for every character
     return sum;
 }
 
