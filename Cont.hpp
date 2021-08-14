@@ -67,7 +67,7 @@ const typename Cont_base<T>::Info Cont_base<T>::_EMPTY{};     // Info _EMPTY att
 // Embedded class Info =======================================================
 
 template <typename T>
-class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // class Info inherit from struct _Base define in _Cont_Base
+class Cont_base<T>::Info : public _Cont_base::_Base<typename Cont_base<T>::Info> {      // inherit from struct _Base define in _Cont_Base
   friend class Cont_base<T>;   // for _index static methods
   std::ptrdiff_t _index = -1;
   const T _data{};
@@ -91,11 +91,6 @@ public:
     {return _data == i._data;}
 }; // Info
 
-//template<typename T>
-//constexpr bool operator==(const typename Cont_base<T>::Info &i, const typename Cont_base<T>::Info &j) noexcept {
-//    return i._data == j._data && i._index == j._index;
-//}
-
 // Embedded class Ptr2Info ===================================================
 
 template <typename T>
@@ -115,7 +110,7 @@ public:
   constexpr Ptr2Info(T i) : _ptr(new Info(i))  {};       // implicit cast from T to Ptr2Info
   constexpr operator const Info& () const noexcept       // implicit cast
     {return _ptr ? *_ptr : _EMPTY;}
-    constexpr operator const T& () const noexcept        // implicit cast -> from const T& to const Info
+    constexpr operator const T& () const noexcept        // implicit cast from const T& to const *Info
     {return _ptr ? *_ptr : _EMPTY;}
   // Getter
   constexpr bool isEmpty() const noexcept {return !_ptr;}
@@ -123,8 +118,6 @@ public:
     {return _ptr->_data < i._ptr->_data;}
   constexpr bool operator== (const Ptr2Info& i) const noexcept
     {return _ptr->_data == i._ptr->_data;}
-//constexpr bool operator== (const Ptr2Info& i) const noexcept
-//{return _ptr->_data == i._ptr->_data && _ptr->_index == i._ptr->_index;}
 }; // Ptr2Info
 
 namespace _Cont_base {
@@ -152,22 +145,10 @@ public:
     // Constructors
     constexpr Cont() noexcept = default;                                          // constructor without parameters
     explicit constexpr Cont(std::size_t t) noexcept: _BST(), _Vect(t){}           // constructor with maximum size of Cont
-    Cont(const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
-    Cont(std::size_t t, const std::initializer_list<T> &init) noexcept;           // constructor with maximum size of Cont
-
-    // pas compris : différence entre copie d'un vect de type Cont ou pas ???
-    // vect de type cont peut contenir un arbre ou non, pas le vect simple, un probleme d'index -> forcément de type _Vect
-    // un probleme de pointeur ? un Vect de type int doit ensuite être converti en Ptr2Info -> soucis ?
-
-//    constexpr Cont (std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
-//        for(auto object : {init}) {
-//            std::cout << object << std::endl;
-//            Cont_base<T>::_used += 1;
-//        }
-//    }
-
+    Cont(const std::initializer_list<T> &init) noexcept;                          // constructor with initializer_list
+    Cont(std::size_t t, const std::initializer_list<T> &init) noexcept;           // constructor with initializer_list and maximum size of Cont
     // Setters
-    _Ptr2Info& operator[] (std::ptrdiff_t idx) override ;       // in Cont Vect setter is not accessible
+    _Ptr2Info& operator[] (std::ptrdiff_t idx) override ;
     const _Info& insert(const _Info &v) override;
     bool erase(const _Info &v) override;
     // Getters
@@ -184,7 +165,7 @@ public:
     // Output
     void _dsp (std::ostream &out) const override {_BST::_dsp(out);}
     // note : ne fonctionne pas pour un type déclaré Vect, problème : celui ci n'a pas de BST rempli et donc ne peut pas utiliser l'opérateur d'output de celui-ci
-    // détecter le type déclaré (est-ce possible?) reviendrait à briser le principe de Substitution de Liskov
+    // détecter le type déclaré (est-ce possible?) reviendrait à briser le principe de Substitution de Liskov...
     // Destructor
     ~Cont () noexcept = default;
     // Associated function
@@ -218,7 +199,7 @@ typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) {
     if (_Vect::operator[](idx).isEmpty()){          // value are constant in Cont context, no change allowed for element
         return _Vect::operator[](idx);
     }
-    else throw std::domain_error("can't assign new value in constant vect");
+    else throw std::domain_error("can't assign new value in a constant vect");
 }
 
 template<typename T>
@@ -256,14 +237,16 @@ bool Cont<T>::erase(const _Info &v) {
         else return false;
     }
     else {
-        if(_Vect::operator[](idx) == v ){               // implicit cast to constructor Info for vect[idx] with correct index
-        //if(_Vect::operator[](idx) == Ptr2Info(v) ){
-            _Vect::operator[](idx) = Ptr2Info() ;           // erase pointeur of Vect
-            if(_BST::erase(v)){
-                Cont_base<T>::_used -= 1;
-                return true;
+        if(!(_Vect::operator[](idx).isEmpty())){
+            if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){       // if index and value are the same
+                _Vect::operator[](idx) = Ptr2Info() ;           // erase pointeur of Vect
+                if(_BST::erase(v)){
+                    Cont_base<T>::_used -= 1;
+                    return true;
+                }
+                else return false;
             }
-            else return false;
+
         }
         else{
             throw std::domain_error("element not found at this position");
@@ -280,8 +263,11 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
         return _BST::find(v);
     }
     else{
-        if(_Vect::operator[](idx) == v){      // implicit cast to constructor Info for vect[idx] with correct index
-            return _BST::find(v);
+        if(!(_Vect::operator[](idx).isEmpty())){
+            if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){      // if index and value are the same
+                return _BST::find(v);
+            }
+            else return _BST::_NOT_FOUND;
         }
         else return _BST::_NOT_FOUND;  // no exception threw here because base virtual method is noexcept
     }
@@ -292,9 +278,7 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
 template<typename T>
 Cont<T>::Cont (const Cont<T> &v) noexcept: Cont_base<T>(), _BST(), _Vect(v.dim()){   // Cont_base<T> prevents warning
     for (std::size_t i = 0; i < v.dim(); ++i){    // warning conversion to std::ptrdiff_t='long int' from std::size_t='long unsigned int' is acceptable because i start at 0 (same for further into code)
-        if ( !v.at(i).isEmpty()) {
-            Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});
-        }
+        if (!v.at(i).isEmpty()) Cont::insert({i,*Cont_base<T>::_ptr(v.at(i))});     // fill the BST
     }
     Cont_base<T>::_used = v.getUsed();
 }
@@ -303,7 +287,7 @@ template<typename T>
 Cont<T>::Cont (const _Vect &v) : _BST(), _Vect(v.dim()){
     if (const Cont* cont = dynamic_cast<const Cont*>(&v)){  // dynamic_cast doesn't have the ability to remove a const qualifier
         for (std::size_t i = 0; i < v.dim(); ++i){
-            if ( !v.at(i).isEmpty()) Cont::insert({ i,*Cont_base<T>::_ptr(v.at(i))});
+            if ( !v.at(i).isEmpty()) Cont::insert({ i,*Cont_base<T>::_ptr(v.at(i))});   // fill the BST
         }
     }
     else{
@@ -324,7 +308,7 @@ Cont<T>::Cont(const _BST &v) : _BST(v), _Vect(){
 
 template<typename T>
 Cont<T>& Cont<T>::operator=(const _BST &v) {
-    if (const Cont* res = dynamic_cast<const Cont*>(&v)){           // dynamic_cast doesn't have the ability to remove a const qualifier
+    if (const Cont* res = dynamic_cast<const Cont*>(&v)){  // dynamic_cast doesn't have the ability to remove a const qualifier
         if (this != &v){
             Cont_base<T>::operator=(*res);                 // explicit call to copy assignement operator of Cont_Base for _used
             _BST::operator=(*res) ;                        // explicit call to copy assignement for _BST subobject
@@ -365,8 +349,8 @@ template<typename T>
 Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {
     if (this != &v){
         Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-        _BST::operator=(v) ;
-        _Vect::operator=(v) ;
+        _BST::operator=(v) ;                        // explicit call to copy assignement operator of BST
+        _Vect::operator=(v) ;                       // explicit call to copy assignement operator of Vect
     }
     return *this;
 }
@@ -374,7 +358,7 @@ Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {
 template<typename T>
 Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
     if (this != &v){
-        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+        Cont_base<T>::operator=(v);
         _BST::operator=(v) ;
         _Vect::operator=(v) ;
     }

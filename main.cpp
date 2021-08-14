@@ -9,14 +9,15 @@ int main() {
     {
         std::cout << "***" << std::endl;
 
-//        Vect<Cont_base<MyType>::Ptr2Info> *VECTE = new Cont<MyType>(20);   // one parameter constructor
-//        MyType mytype = MyType("43test");
-//        VECTE->operator[](2) = MyType("string");
-//
-//        std::cout << "v[2] (5) : " << VECTE->at(2) << ", " << VECTE->operator[](2) << std::endl;
+        Cont<MyType> *contMyType = new Cont<MyType>(20);   // test with defined type
+        MyType str = MyType("43test");
+        contMyType->insert({1, str});
+        contMyType->insert({3, MyType("mot")});
+        contMyType->insert({18, MyType("random")});
+        std::cout << "find(str) (43test) : " << contMyType->find(str) << std::endl;
+        std::cout << *contMyType << std::endl;
 
-        std::cout << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl;
-        std::cout << " " << std::endl;
+        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Vect ***" << std::endl << std::endl;
 
         Vect<Cont_base<int>::Ptr2Info> *vect = new Cont<int>(30);   // one parameter constructor
         vect->operator[](2) = 5;
@@ -31,16 +32,10 @@ int main() {
         *vect = Vect<Cont_base<int>::Ptr2Info>({10, 11, 12, 13});
         std::cout << "v[3] (13) : " << vect->at(3) << std::endl;
         std::cout << "dim v (4) : " << vect->dim() << std::endl;
-        try{
-            vect->at(25);
-        }
-        catch (const std::exception& e){
-            std::cout << "Caught exception <" << e.what() << "> " << std::endl;
-        }
+        try{vect->at(25);}
+        catch (const std::exception& e) {std::cout << "Caught exception <" << e.what() << "> " << std::endl;}
 
-        std::cout << " " << std::endl;
-        std::cout << "*** Utilisation d'un Cont de type effectif BST ***" << std::endl;
-        std::cout << " " << std::endl;
+        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif BST ***" << std::endl;
 
         BST<Cont_base<char>::Info> *bstchar = new Cont<char>(10);
         bstchar->insert({1, 'c'});
@@ -58,23 +53,15 @@ int main() {
         std::cout << "find((12,17)) (17) : " << bst->find({12,17}) << std::endl;
         std::cout << "find((89,17)) (0) : " << bst->find({89,17}) << std::endl;
         std::cout << "find(17) (17) : " << bst->find(17) << std::endl;
-        try{
-            bst->insert({19, 17});
-        }
-        catch (const std::exception& e){
-            std::cout << "Caught exception <" << e.what() << "> " << std::endl;
-        }
-        try{
-            std::cout << "erase({5,17}) (true) : " << bst->erase(Cont_base<int>::Info(5,17)) << std::endl;
-        }
-        catch (const std::exception& e){
-            std::cout << "Caught exception <" << e.what() << "> " << std::endl;
-        }
+        try{bst->insert({19, 17});}     // no duplicated element
+        catch (const std::exception& e){std::cout << "Caught exception <" << e.what() << "> " << std::endl;}
+        try{std::cout << "erase({5,17}) (exception) : " << bst->erase(Cont_base<int>::Info(5,17)) << std::endl;}
+        catch (const std::exception& e){std::cout << "Caught exception <" << e.what() << "> " << std::endl;}
         std::cout << "erase({12,17}) (true) : " << bst->erase({12,17}) << std::endl;
 
-        std::cout << " " << std::endl;
-        std::cout << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl;
-        std::cout << " " << std::endl;
+
+        std::cout << std::endl << "*** Utilisation d'un Cont de type effectif Cont ***" << std::endl << std::endl;
+
 
         Cont_base<int>::Info t(7,52);
         Cont<int> *container = new Cont<int>(30) ;
@@ -100,23 +87,16 @@ int main() {
         Cont<int> cont3 = std::move(*container2) ;
         std::cout << cont3 << std::endl;
 
-        std::cout << " " << std::endl;
-        std::cout << "***** Conversions *****" << std::endl;
-        std::cout << " " << std::endl;
+        std::cout << std::endl <<"***** Conversions *****" << std::endl << std::endl;
 
         // deduction guide pas de <T> à mettre avant Cont;
         Cont<int> *fromVect = new Cont(*vect);        // pseudo conversion d'un Vect vers un Cont
         std::cout << *fromVect << std::endl;
 
-
         BST<Cont_base<int>::Info> arb;
         arb.insert(3);
-        try{
-            Cont<int> cont5(arb);        // wrong effectiv type
-        }
-        catch (const std::exception& e){
-            std::cout << "Caught exception <" << e.what() << "> " << std::endl;
-        }
+        try{Cont<int> cont5(arb);}        // wrong effectiv type
+        catch (const std::exception& e){std::cout << "Caught exception <" << e.what() << "> " << std::endl;}
 
         bst->insert({4,23});
         bst->insert({6,11});
@@ -127,13 +107,12 @@ int main() {
         std::cout << "_used (4) : " << fromBST->getUsed() << std::endl;
 
         std::cout << "*********" << std::endl;
+
         delete vect;
         delete bst;
         delete container;
         delete fromVect;
         delete fromBST;
-
-        std::cout << "***" << std::endl;
     }
     std::cout << ">>>" << std::endl;
     return 0;
