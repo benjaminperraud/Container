@@ -196,13 +196,17 @@ public:
 // Constructors ============================================================
 
 template<typename T>
-Cont<T>::Cont(const std::initializer_list<T> &init) noexcept : _BST(), _Vect(init){
-
+Cont<T>::Cont(const std::initializer_list<T> &init) noexcept : _BST(), _Vect(init.size()){
+    auto p = init.begin();
+    for (std::size_t i = 0; i < init.size(); ++i)
+        Cont::insert({i, *p++});
 }
 
 template<typename T>
-Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t, init){
-
+Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BST(), _Vect(t){
+    auto p = init.begin();
+    for (std::size_t i = 0; i < t; ++i)
+        Cont::insert({i, *p++});
 }
 
 
@@ -328,7 +332,7 @@ Cont<T>& Cont<T>::operator=(const _BST &v) {
         if (this != &v){
             Cont_base<T>::operator=(*res);                 // explicit call to copy assignement operator of Cont_Base for _used
             _BST::operator=(*res) ;                        // explicit call to copy assignement for _BST subobject
-            //_Vect::operator=(*res) ;                       // explicit call to copy assignement for _Vect subobject
+            //_Vect::operator=(*res) ;                     // explicit call to copy assignement for _Vect subobject
 
             // parcourt de l'arbe -> Vect doit pointer au bon endroit
 

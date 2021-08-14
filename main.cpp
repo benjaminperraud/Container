@@ -81,7 +81,10 @@ int main() {
         std::cout << "erase (t) (true) : " << container->erase(t) << std::endl;
         std::cout << "container[7] (0) : " << container->at(7) << std::endl;
         std::cout << "_used (1) : " << container->getUsed() << std::endl;
-        std::cout << *container << std::endl;
+
+
+        Cont<int> *container2 = new Cont<int>({1,2,3,4,5,6,7}) ;
+        std::cout << *container2 << std::endl;
 
 //        Cont<int> *cont2 = new Cont<int>({1,2,3,4,5}) ;             // initialization list      -> copie dans vect puis constructeur de CONVERSION
 //        std::cout << "find (3) (3) : " << cont2->find(3) << std::endl;
@@ -135,7 +138,7 @@ int main() {
         //std::cout << "fromBST[6] (11) : " << fromBST->at(6) << std::endl;
         std::cout << "_used (4) : " << container->getUsed() << std::endl;
 
-        // manque test assignement d'un vect
+
 
         std::cout << "*********" << std::endl;
         delete vect;
@@ -144,24 +147,7 @@ int main() {
         delete fromVect;
         delete fromBST;
 
-        // Cont<int> *cont3 = new Cont<int>(*cont2);
-//
-//        BST<Cont_base<int>::Info> arb ;
-//
-////        Cont_base<int>::PtrInfo ptr(15,12);
-////        Vect<Cont_base<int>::Ptr2Info> x = Vect<Cont_base<int>::Ptr2Info>(5);
-////        Vect<int> x = Vect<int>(5);
-////        Vect<Cont_base<int>::Ptr2Info> *x = new Cont<int>(20);   // one parameter constructor
-//
-//        BST<Cont_base<int>::Info> *bst = new Cont<int>();
-//
-//        auto *l = new BST<Cont_base<int>::Info>();
-//
-//        auto *x = new Cont<int>(10);
-//
-//        *x = *bst;
-//        *x = *l;
-//
+
         std::cout << "***" << std::endl;
     }
     std::cout << ">>>" << std::endl;
