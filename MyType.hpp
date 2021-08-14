@@ -18,26 +18,28 @@ public:
     bool operator< (const MyType& i) const noexcept
     {return findSum(_val) < findSum(i._val);}
     bool operator== (const MyType& i) const noexcept
-    {return findSum(_val) == findSum(i._val);}
+    { std::cout << findSum(_val) <<findSum(i._val)   << std::endl;
+        return findSum(_val) == findSum(i._val);}
     int findSum(const std::string &str) const;
     friend inline std::ostream& operator<< (std::ostream&, const MyType&);
 
+    // Copies & transfers
+    MyType (const MyType& v) noexcept: _val(v._val) {}
+    MyType (MyType&& v) noexcept:  _val(v._val) {v._val = " ";}
 
-//    inline MyType& operator= (const MyType&) noexcept;
-//    inline MyType& operator= (MyType&&) noexcept;
+    inline MyType& operator= (const MyType&) noexcept;
+    inline MyType& operator= (MyType&&) noexcept;
 };
 
+
 int MyType::findSum(const std::string &str) const {
-    std::string temp;
+    // To store the sum
     int sum = 0;
-    for (char ch : str) {
-        if (isdigit(ch)) temp += ch;
-        else {
-            sum += atoi(temp.c_str());
-            temp = "";
-        }
+    // For every character
+    for (char i : str) {
+        sum += (int)i;
     }
-    return sum + atoi(temp.c_str());
+    return sum;
 }
 
 // Associated functions =========================================================
@@ -46,20 +48,20 @@ int MyType::findSum(const std::string &str) const {
 inline std::ostream& operator<< (std::ostream& out, const MyType& t)
 {out << "'"; t._dsp(out); out << "'"; return out;}
 
-//MyType &MyType::operator=(const MyType &m) noexcept {
-//    if (this != &m) {
-//        _val = m._val;
-//    }
-//    return *this;
-//}
-//
-//MyType &MyType::operator=(MyType &&m) noexcept {
-//    if (this != &m) {
-//        _val = m._val;
-//        m._val = " ";
-//    }
-//    return *this;
-//}
+MyType &MyType::operator=(const MyType &m) noexcept {
+    if (this != &m) {
+        _val = m._val;
+    }
+    return *this;
+}
+
+MyType &MyType::operator=(MyType &&m) noexcept {
+    if (this != &m) {
+        _val = m._val;
+        m._val = " ";
+    }
+    return *this;
+}
 
 
 #ifndef CONTAINERS_MYTYPE_HPP

@@ -118,11 +118,13 @@ public:
     constexpr operator const T& () const noexcept        // implicit cast -> from const T& to const Info
     {return _ptr ? *_ptr : _EMPTY;}
   // Getter
-  constexpr bool isEmpty () const noexcept {return !_ptr;}
+  constexpr bool isEmpty() const noexcept {return !_ptr;}
   constexpr bool operator< (const Ptr2Info& i) const noexcept
     {return _ptr->_data < i._ptr->_data;}
   constexpr bool operator== (const Ptr2Info& i) const noexcept
     {return _ptr->_data == i._ptr->_data;}
+//constexpr bool operator== (const Ptr2Info& i) const noexcept
+//{return _ptr->_data == i._ptr->_data && _ptr->_index == i._ptr->_index;}
 }; // Ptr2Info
 
 namespace _Cont_base {
@@ -165,9 +167,11 @@ public:
 //    }
 
     // Setters
+    //_Ptr2Info& operator[] (std::ptrdiff_t idx) override ;       // in Cont Vect setter is not accessible
     const _Info& insert(const _Info &v) override;
     bool erase(const _Info &v) override;
     // Getters
+    //const _Ptr2Info& operator[] (std::ptrdiff_t idx) const override ;       // in Cont Vect setter is not accessible
     const _Info& find(const _Info &v) const noexcept override;
     constexpr std::size_t getUsed() const noexcept {return Cont_base<T>::_used;};
     // Copies & transfers
@@ -204,6 +208,14 @@ Cont<T>::Cont(std::size_t t, const std::initializer_list<T> &init) noexcept: _BS
 
 // Setters =================================================================
 
+//template<typename T>
+//typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) {
+//    if (_Vect::operator[](idx).isEmpty()){          // value are constant in Cont context, no change allowed for element
+//        return _Vect::operator[](idx);
+//    }
+//    else return _Vect::at(idx);
+//}
+
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::insert(const _Info& v) {      // [-Wreturn-type] warning because no explicit return, prevents using insert two times
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
@@ -239,9 +251,9 @@ bool Cont<T>::erase(const _Info &v) {
         else return false;
     }
     else {
-        if(_Vect::operator[](idx) == Ptr2Info(v) ){                           // moyen de faire mieux pour le cast (avant juste v)
-            // if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
-            _Vect::operator[](idx) = Ptr2Info() ;
+        if(_Vect::operator[](idx) == v ){                           // explicit cast to Ptr2Info with no index
+        //if(_Vect::operator[](idx) == Ptr2Info(v) ){
+            _Vect::operator[](idx) = Ptr2Info() ;           // erase pointeur of Vect
             if(_BST::erase(v)){
                 Cont_base<T>::_used -= 1;
                 return true;
@@ -256,6 +268,11 @@ bool Cont<T>::erase(const _Info &v) {
 
 // Getters ===================================================================
 
+//template<typename T>
+//const typename Cont<T>::_Ptr2Info& Cont<T>::operator[](std::ptrdiff_t idx) const {
+//    return _Vect::at(idx);
+//}
+
 template<typename T>
 const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
@@ -263,7 +280,8 @@ const typename Cont<T>::_Info& Cont<T>::find(const _Info &v) const noexcept{
         return _BST::find(v);
     }
     else{
-        if(_Vect::operator[](idx) == Ptr2Info(v)){
+        if(_Vect::operator[](idx) == v){      // if index are the same
+        //if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){
             return _BST::find(v);
         }
         else return _BST::_NOT_FOUND;  // no exception threw here because base virtual method is noexcept

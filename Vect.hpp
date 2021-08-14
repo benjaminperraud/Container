@@ -28,10 +28,10 @@ public:
     Vect (std::size_t, const std::initializer_list<T>&) noexcept;
     // Getters
     constexpr std::size_t dim () const noexcept {return _size;}
-    inline const T& operator[] (std::ptrdiff_t) const;
+    virtual const T& operator[] (std::ptrdiff_t) const;
     inline const T& at(std::ptrdiff_t) const;
     // Setters
-    inline T& operator[] (std::ptrdiff_t);
+    virtual T& operator[] (std::ptrdiff_t);
     // Copies & transfers
     Vect (const Vect& v) noexcept: _size(v._size), _val(_cp(v)) { std::cout << "constructeur de copie dans vect.hpp " << std::endl;}
     constexpr Vect (Vect&& v) noexcept: _size(v._size), _val(v._val)
