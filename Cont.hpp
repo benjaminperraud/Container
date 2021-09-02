@@ -229,8 +229,8 @@ template<typename T>
 bool Cont<T>::erase(const _Info &v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){         // either no index specified but v in BST, or v not in BST
-        if(_BST::exists(v)) Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
         if(_BST::erase(v)){
+            Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
             Cont_base<T>::_used -= 1;
             return true;
         }
@@ -246,7 +246,6 @@ bool Cont<T>::erase(const _Info &v) {
                 }
                 else return false;
             }
-
         }
         else{
             throw std::domain_error("element not found at this position");
