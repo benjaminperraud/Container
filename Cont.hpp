@@ -345,32 +345,33 @@ inline std::ostream &operator<<(std::ostream &out, const Cont<U> &c){
     out << "[ "; c._dsp(out); out << ']'; return out;}
 
 
-    template<typename T>
-    Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {
-        if (this != &v){
-            Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
-            _BST::operator=(v) ;                        // explicit call to copy assignement operator of BST
-            _Vect::operator=(v) ;                       // explicit call to copy assignement operator of Vect
-        }
-        return *this;
+
+template<typename T>
+Cont<T>& Cont<T>::operator=(const Cont &v) noexcept {
+    if (this != &v){
+        Cont_base<T>::operator=(v);                 // explicit call to copy assignement operator of Cont_Base for _used
+        _BST::operator=(v) ;                        // explicit call to copy assignement operator of BST
+        _Vect::operator=(v) ;                       // explicit call to copy assignement operator of Vect
     }
+    return *this;
+}
 
-    template<typename T>
-    Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
-        if (this != &v){
-            Cont_base<T>::operator=(v);
-            _BST::operator=(v) ;
-            _Vect::operator=(v) ;
-        }
-        v.Cont_base<T>::_used = 0;
-        return *this;
+template<typename T>
+Cont<T>& Cont<T>::operator=(Cont &&v) noexcept {
+    if (this != &v){
+        Cont_base<T>::operator=(v);
+        _BST::operator=(v) ;
+        _Vect::operator=(v) ;
     }
+    v.Cont_base<T>::_used = 0;
+    return *this;
+}
 
 
-    // Deduction guides ==========================================================
+// Deduction guides ==========================================================
 
-    template <typename T>
-    Cont (const Vect<T>&) -> Cont<typename T::value_type>;
+template <typename T>
+Cont (const Vect<T>&) -> Cont<typename T::value_type>;
 
 template <typename T>
 Cont (const BST<T>&) -> Cont<typename T::value_type>;
