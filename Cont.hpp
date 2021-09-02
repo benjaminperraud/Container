@@ -229,8 +229,8 @@ template<typename T>
 bool Cont<T>::erase(const _Info &v) {
     std::ptrdiff_t idx = Cont_base<T>::_index(v);
     if (idx == -1){         // either no index specified but v in BST, or v not in BST
-        if(_BST::exists(v)) {
-            Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
+        if(_BST::exists(v)) Cont_base<T>::_ptr(_Vect::operator[](Cont_base<T>::_index(_BST::find(v)))) = nullptr;  // delete pointer if v exist in BST
+        if(_BST::erase(v)){
             Cont_base<T>::_used -= 1;
             return true;
         }
@@ -239,7 +239,7 @@ bool Cont<T>::erase(const _Info &v) {
     else {
         if(!(_Vect::operator[](idx).isEmpty())){
             if(*Cont_base<T>::_ptr(_Vect::operator[](idx)) == v){       // if index and value are the same
-                _Vect::operator[](idx) = Ptr2Info() ;                   // erase pointeur of Vect
+                _Vect::operator[](idx) = Ptr2Info() ;           // erase pointeur of Vect
                 if(_BST::erase(v)){
                     Cont_base<T>::_used -= 1;
                     return true;
